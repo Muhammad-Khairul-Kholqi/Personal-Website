@@ -9,7 +9,7 @@ export default function LinkLists() {
             <LinkItem icon={Home} label="Home" url="/" />
             <LinkItem icon={Leaf} label="About" url="/pages/about" />
             <LinkItem icon={PencilLine} label="Blogs" url="/pages/blogs" />
-            <LinkItem icon={Package} label="Projects" url="/" />
+            <LinkItem icon={Package} label="Projects" url="/pages/projects" />
             <LinkItem icon={LayoutGrid} label="Dashboard" url="/profile" />
             <LinkItem icon={ScrollText} label="Certificates" url="/pages/about" />
             <LinkItem icon={Send} label="Contacts" url="/projects" />
