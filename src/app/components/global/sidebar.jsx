@@ -5,7 +5,7 @@ import { BadgeCheck } from "lucide-react"
 
 export default function Sidebar() {
     return (
-        <aside className="hidden lg:block w-full max-w-[25%] bg-white rounded-lg p-5 h-fit sticky top-5">
+        <aside className="hidden lg:block w-full max-w-[25%] bg-white rounded-lg px-5 h-fit sticky top-5 max-h-[calc(100vh-20px)] overflow-auto scrollbar-hide">
             <div className="relative">
                 <Image
                     src="https://drive.google.com/uc?export=view&id=1Fb8V5T46mVAlWwTAuFYvxZvHtD7HM2t4"

@@ -8,16 +8,15 @@ const sora = Sora({
   weight: ["400", "500", "600", "700"],
 });
 
-
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={sora.variable}> 
-      <body className={`${sora.className} font-sora`}> 
+      <body className={`${sora.className} font-sora overflow-hidden`}> 
         <MobileHeader />
-        <div className="flex justify-center p-5 pt-20 lg:pt-5">
-          <div className="w-full max-w-[1300px] flex">
+        <div className="flex justify-center p-5 pt-20 lg:pt-5 h-screen">
+          <div className="w-full max-w-[1300px] flex h-full">
             <Sidebar />
-            <section className="scrollbar-hide w-full lg:max-w-[75%] p-5 overflow-y-auto max-h-screen" >
+            <section className="scrollbar-hide w-full lg:max-w-[75%] p-5 overflow-y-auto h-full">
               {children}
             </section>
           </div>

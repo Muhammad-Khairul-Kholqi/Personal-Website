@@ -38,3 +38,31 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+@keyframes slide-left {
+  0% {
+    transform: translateX(0%);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes slide-right {
+  0% {
+    transform: translateX(-50%);
+  }
+
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.animate-slide-left {
+  animation: slide-left 40s linear infinite;
+}
+
+.animate-slide-right {
+  animation: slide-right 40s linear infinite;
+}
