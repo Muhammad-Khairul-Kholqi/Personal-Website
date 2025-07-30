@@ -28,7 +28,7 @@ export default function Sidebar() {
 
             <div className="mt-14">
                 <div className="flex items-center gap-1 justify-center">
-                    <h2 className="text-2xl font-bold tracking-wide">Khairul Kholqi</h2>
+                    <h2 className="text-xl font-bold tracking-wide">Khairul Kholqi</h2>
                     <BadgeCheck className="h-5 w-5 mt-1 text-white" fill="#60A5FA" />
                 </div>
                 <span className="text-center flex justify-center text-gray-600">@irulsss</span>

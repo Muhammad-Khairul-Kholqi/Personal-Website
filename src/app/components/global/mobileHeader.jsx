@@ -14,7 +14,7 @@ export default function MobileHeader() {
 
     return (
         <>
-            <header className="lg:hidden fixed top-0 left-0 right-0 shadow-md bg-white z-40 px-5 py-3">
+            <header className="lg:hidden fixed top-0 left-0 right-0 bg-white z-40 px-5 py-3">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-white shadow-md">
