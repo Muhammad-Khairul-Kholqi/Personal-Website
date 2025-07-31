@@ -142,7 +142,6 @@ export default function ProjectsPage() {
                 </div>
             )}
 
-            {/* Pagination */}
             {filteredProjects.length > projectsPerPage && (
                 <div className="flex justify-center items-center gap-2 mt-6">
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (

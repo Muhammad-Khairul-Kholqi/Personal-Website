@@ -11,7 +11,7 @@ export default function LinkLists() {
             <LinkItem icon={PencilLine} label="Blogs" url="/pages/blogs" />
             <LinkItem icon={Package} label="Projects" url="/pages/projects" />
             <LinkItem icon={LayoutGrid} label="Dashboard" url="/profile" />
-            <LinkItem icon={ScrollText} label="Certificates" url="/pages/about" />
+            <LinkItem icon={ScrollText} label="Certificates" url="/pages/certificates" />
             <LinkItem icon={Send} label="Contacts" url="/projects" />
         </div>
     );
