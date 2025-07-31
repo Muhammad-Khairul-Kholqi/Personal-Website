@@ -19,7 +19,6 @@ export default function ProjectsPage() {
     useEffect(() => {
         setIsClient(true)
 
-        // Ambil page dari URL setelah component di-mount
         const urlParams = new URLSearchParams(window.location.search)
         const pageParam = urlParams.get("page")
         if (pageParam) {
@@ -52,12 +51,10 @@ export default function ProjectsPage() {
         router.push(`?page=${page}`)
     }
 
-    // Reset ke halaman 1 ketika filter berubah
     useEffect(() => {
         setCurrentPage(1)
     }, [filterStatus, searchKeyword])
 
-    // Tampilkan loading jika belum di client
     if (!isClient) {
         return (
             <>
@@ -146,7 +143,7 @@ export default function ProjectsPage() {
                                         width={500}
                                         height={200}
                                         alt={project.name}
-                                        className="border w-full border-gray-200 rounded-lg object-cover group-hover:scale-110 duration-300"
+                                        className="border w-full h-[200px] border-gray-200 rounded-lg object-cover group-hover:scale-110 duration-300"
                                     />
                                 </div>
                                 <div className="mt-3">

@@ -82,7 +82,7 @@ export const ProjectsData = [
 
     {
         name: "Company Profile",
-        image: "https://drive.google.com/uc?export=view&id=14Hf4-SEBq6sf9rxzvogWkwhpJHmQmrL1",
+        image: "https://drive.google.com/uc?export=view&id=130lgksDM31oxG6Qv7T7P2_3a0fnEXRKU",
         description: "Company Profile is a fullstack website project designed to showcase a company's information, services, and portfolio in a clean and professional format. I led the project as both Project Manager and Fullstack Developer, overseeing the entire development process. The frontend was built using React.js and Tailwind CSS, while the backend was developed with Express.js and MySQL. I also designed the user interface using Figma, conducted API testing with Postman, and used Docker for development and deployment support. The goal was to create a responsive, scalable, and easily maintainable web application.",
         status: "finished",
         repository: "",
@@ -96,22 +96,7 @@ export const ProjectsData = [
         ],
         techs: ["React JS", "Tailwind", "Express JS", "MySQL", "Postman", "Docker", "Axios"]
     },
-
-    {
-        name: "mMdicines Website",
-        image: "https://drive.google.com/uc?export=view&id=14Hf4-SEBq6sf9rxzvogWkwhpJHmQmrL1",
-        description: "Medicines Website is a web-based application developed to manage and display pharmaceutical product data efficiently. I was responsible for designing and building the database structure using MySQL and developing the system using Laravel and Bootstrap. The project focused on creating a responsive layout and implementing essential CRUD functionalities to support pharmacy operations. This website was designed with usability and scalability in mind, making it easy for admins to manage product and inventory information.",
-        status: "finished",
-        repository: "",
-        demo: "",
-        detail: "medicines-website",
-        tasks: [
-            "Designed and built the database structure using MySQL.",
-            "Developed the website using Laravel and Bootstrap, focusing on responsive layout and CRUD functionalities.",
-        ],
-        techs: ["Laravel", "Tailwind", "MySQL"]
-    },
-
+    
     {
         name: "Daily Agenda",
         image: "https://drive.google.com/uc?export=view&id=1_2K61C6OF-5vBtm_hWolbSGDeWNHlgyX",
@@ -145,7 +130,7 @@ export const ProjectsData = [
 
     {
         name: "Personal Workspace",
-        image: "https://drive.google.com/uc?export=view&id=1FiwwGb2WNuGAxurbW7aQDcoRYM98xUfX",
+        image: "https://drive.google.com/uc?export=view&id=1WhkPrAN8si_0VAgik-USfEcp2Ue_t9EF",
         description: "Personal Workspace is a web application designed to help individuals organize their work and manage personal tasks more efficiently. I developed the entire frontend using Next.js and Tailwind CSS, focusing on clean design, responsive layout, and a well-structured component system. The goal of this project was to create a seamless and intuitive user experience for managing daily workflows, notes, and productivity tools in one place.",
         status: "processed",
         repository: "https://github.com/Muhammad-Khairul-Kholqi/PersonalWorkspace",
