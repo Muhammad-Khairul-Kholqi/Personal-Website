@@ -8,7 +8,7 @@ export default function ContactPage() {
             <hr className="border-t border-dashed border-gray-500 my-5" />
 
             <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 items-center gap-3">
-                <a href="" className="border border-gray-200 p-5 rounded-xl flex items-center gap-3 hover:shadow-lg duration-300">
+                <a href="https://www.linkedin.com/in/muhammad-khairul-kholqi-9b9413326/" className="border border-gray-200 p-5 rounded-xl flex items-center gap-3 hover:shadow-lg duration-300">
                     <Linkedin className="text-blue-600" />
                     <div>
                         <h2 className="text-xl">Let's connect</h2>
@@ -16,7 +16,7 @@ export default function ContactPage() {
                     </div>
                 </a>
 
-                <a href="" className="border border-gray-200 p-5 rounded-xl flex items-center gap-3 hover:shadow-lg duration-300">
+                <a href="https://www.instagram.com/khairul.kh_/" className="border border-gray-200 p-5 rounded-xl flex items-center gap-3 hover:shadow-lg duration-300">
                     <Github className="text-green-600" />
                     <div>
                         <h2 className="text-xl">Explore the code</h2>
@@ -24,7 +24,7 @@ export default function ContactPage() {
                     </div>
                 </a>
 
-                <a href="" className="border border-gray-200 p-5 rounded-xl flex items-center gap-3 hover:shadow-lg duration-300">
+                <a href="https://github.com/Muhammad-Khairul-Kholqi/" className="border border-gray-200 p-5 rounded-xl flex items-center gap-3 hover:shadow-lg duration-300">
                     <Instagram className="text-red-600" />
                     <div>
                         <h2 className="text-xl">Follow me</h2>

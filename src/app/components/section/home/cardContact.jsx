@@ -9,7 +9,7 @@ export default function CardContact() {
                 <span className="font-semibold text-xl">Lets Work Together!</span>
             </div>  
             <p className="mt-2">I'm open for freelance projects, feel free to email me to see how can we collaborate.</p>
-            <Link href="/">
+            <Link href="/pages/contacts">
                 <div className="flex">
                     <div className="bg-[#525252] hover:bg-[#525252]/80 text-white px-5 py-3 rounded-md text-center mt-4">
                         Contact Me

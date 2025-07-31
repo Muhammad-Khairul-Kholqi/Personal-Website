@@ -2,6 +2,7 @@ import "@/app/styles/globals.css";
 import Sidebar from "@/app/components/global/sidebar";
 import MobileHeader from "@/app/components/global/mobileHeader";
 import { Sora } from "next/font/google";
+import Footer from "./components/global/footer";
 
 const sora = Sora({
   subsets: ["latin"],
@@ -18,6 +19,7 @@ export default function RootLayout({ children }) {
             <Sidebar />
             <section className="scrollbar-hide w-full lg:max-w-[75%] p-5 overflow-y-auto h-full">
               {children}
+              <Footer />
             </section>
           </div>
         </div>
