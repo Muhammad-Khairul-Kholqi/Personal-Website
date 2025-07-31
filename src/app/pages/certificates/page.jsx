@@ -1,16 +1,14 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import CertificateData from "@/app/data/certificateData";
 
 export default function CertificatesPage() {
     const router = useRouter();
-    const searchParams = useSearchParams();
-
-    const page = searchParams.get('page');
-    const currentPage = page ? parseInt(page) : 1;
+    const [currentPage, setCurrentPage] = useState(1);
+    const [isClient, setIsClient] = useState(false);
     const certificatesPerPage = 6;
 
     const indexOfLast = currentPage * certificatesPerPage;
@@ -20,13 +18,47 @@ export default function CertificatesPage() {
     const [displayedCertificates, setDisplayedCertificates] = useState([]);
 
     useEffect(() => {
+        setIsClient(true);
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const page = urlParams.get('page');
+        if (page) {
+            setCurrentPage(parseInt(page));
+        }
+    }, []);
+
+    useEffect(() => {
         const sliced = CertificateData.slice(indexOfFirst, indexOfLast);
         setDisplayedCertificates(sliced);
-    }, [indexOfFirst, indexOfLast]); 
+    }, [indexOfFirst, indexOfLast]);
 
     const changePage = (pageNum) => {
+        setCurrentPage(pageNum);
         router.push(`/pages/certificates?page=${pageNum}`);
     };
+
+    if (!isClient) {
+        return (
+            <div>
+                <h1 className="text-2xl">Certification</h1>
+                <p className="text-[#525252] text-sm">Certificates I earned through training and seminars.</p>
+                <hr className="border-t border-dashed border-gray-500 my-5" />
+
+                <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
+                    {Array.from({ length: certificatesPerPage }).map((_, idx) => (
+                        <div key={idx} className="border border-gray-200 p-5 rounded-xl animate-pulse">
+                            <div className="bg-gray-200 h-[250px] rounded-lg mb-3"></div>
+                            <div className="bg-gray-200 h-6 rounded mb-3"></div>
+                            <div className="flex gap-5">
+                                <div className="bg-gray-200 h-4 w-24 rounded"></div>
+                                <div className="bg-gray-200 h-4 w-16 rounded"></div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div>

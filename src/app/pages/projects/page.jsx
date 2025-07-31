@@ -2,20 +2,30 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { useSearchParams, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { Github, SquareArrowOutUpRight, ScanLine, Search } from "lucide-react"
 import { ProjectsData } from "@/app/data/projectsData"
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 
 export default function ProjectsPage() {
     const router = useRouter()
-    const searchParams = useSearchParams()
-    const pageParam = searchParams.get("page")
-    const currentPage = parseInt(pageParam || "1")
+    const [currentPage, setCurrentPage] = useState(1)
+    const [isClient, setIsClient] = useState(false)
     const projectsPerPage = 6
 
     const [filterStatus, setFilterStatus] = useState(null)
     const [searchKeyword, setSearchKeyword] = useState("")
+
+    useEffect(() => {
+        setIsClient(true)
+
+        // Ambil page dari URL setelah component di-mount
+        const urlParams = new URLSearchParams(window.location.search)
+        const pageParam = urlParams.get("page")
+        if (pageParam) {
+            setCurrentPage(parseInt(pageParam))
+        }
+    }, [])
 
     const filteredProjects = useMemo(() => {
         return ProjectsData.filter((project) => {
@@ -38,7 +48,51 @@ export default function ProjectsPage() {
             : { bg: "bg-orange-50", text: "text-orange-600" }
 
     const changePage = (page) => {
+        setCurrentPage(page)
         router.push(`?page=${page}`)
+    }
+
+    // Reset ke halaman 1 ketika filter berubah
+    useEffect(() => {
+        setCurrentPage(1)
+    }, [filterStatus, searchKeyword])
+
+    // Tampilkan loading jika belum di client
+    if (!isClient) {
+        return (
+            <>
+                <h1 className="text-2xl">Projects</h1>
+                <p className="text-[#525252] text-sm">Showcasing my passion for technology, design, and problem-solving through code.</p>
+                <hr className="border-t border-dashed border-gray-500 my-5" />
+
+                <div className="flex flex-col md:flex-row items-center gap-5 w-full">
+                    <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-1 grid-cols-1 gap-3 w-full md:max-w-[50%]">
+                        {Array.from({ length: 3 }).map((_, idx) => (
+                            <div key={idx} className="bg-gray-200 h-12 rounded-lg animate-pulse"></div>
+                        ))}
+                    </div>
+                    <div className="w-full md:max-w-[50%] bg-gray-200 h-12 rounded-lg animate-pulse"></div>
+                </div>
+
+                <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 items-center gap-5 mt-5">
+                    {Array.from({ length: projectsPerPage }).map((_, idx) => (
+                        <div key={idx} className="border border-gray-200 p-5 rounded-lg animate-pulse">
+                            <div className="bg-gray-200 h-48 rounded-lg mb-3"></div>
+                            <div className="flex items-center justify-between gap-3 mb-3">
+                                <div className="bg-gray-200 h-6 w-32 rounded"></div>
+                                <div className="bg-gray-200 h-8 w-20 rounded-full"></div>
+                            </div>
+                            <div className="bg-gray-200 h-4 w-full rounded mb-3"></div>
+                            <div className="grid grid-cols-3 gap-2">
+                                <div className="bg-gray-200 h-10 rounded"></div>
+                                <div className="bg-gray-200 h-10 rounded"></div>
+                                <div className="bg-gray-200 h-10 rounded"></div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </>
+        )
     }
 
     return (
