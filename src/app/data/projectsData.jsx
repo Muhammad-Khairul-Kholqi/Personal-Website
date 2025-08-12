@@ -1,7 +1,9 @@
+const baseUrl = "https://drive.google.com/uc?export=view&id=";
+
 export const ProjectsData = [
     {
         name: "PPOB Dypedia",
-        image: "https://drive.google.com/uc?export=view&id=1-wTnG8uWwVNgdgQ5cd87xZ40pWIpF6Ww",
+        image: `${baseUrl}1-wTnG8uWwVNgdgQ5cd87xZ40pWIpF6Ww`,
         description: "At Digital Youth Technology, I developed a PPOB website using React JS, including the super admin page, landing page, and various key features.In addition to designing the UI/ UX from the research stage to prototyping in Figma, I also collaborated with the backend team to ensure data integration and system performance ran optimally.",
         status: "finished",
         repository: "",
@@ -17,7 +19,7 @@ export const ProjectsData = [
 
     {
         name: "Marketplace Website",
-        image: "https://drive.google.com/uc?export=view&id=10pcJSGGEU-rCG-prKkIYpiXamMnRIur0",
+        image: `${baseUrl}10pcJSGGEU-rCG-prKkIYpiXamMnRIur0`,
         description: "In a joint project with the Ministry of Health, I developed a marketplace website for medicines by building admin, super admin, and landing pages using Laravel. I also designed the UI/UX from user research to prototyping in Figma, and collaborated closely with the backend team to ensure the system ran optimally and met user needs.",
         status: "finished",
         repository: "",
@@ -29,12 +31,12 @@ export const ProjectsData = [
             "Developed full-featured landing, admin, and super admin pages using Laravel and Tailwind CSS.",
             "Acted as Project Manager and Team Leader.",
         ],
-        techs: ["React JS", "Express JS", "Tailwind", "MySQL", "Postman", "Docker", "Axios"]
+        techs: ["Laravel", "Tailwind", "MySQL"]
     },
 
     {
         name: "Restaurant Website",
-        image: "https://drive.google.com/uc?export=view&id=1bNFYlVPoii5skVi8mu50lA7BJG-TgGQy",
+        image: `${baseUrl}1bNFYlVPoii5skVi8mu50lA7BJG-TgGQy`,
         description: "I developed a restaurant website called Langit Saji, designed to support small culinary businesses (UMKM). I built the entire frontend using Next.js and Tailwind CSS, and created a responsive UI/UX focused on fast performance, clean layout, and a mobile-friendly user experience. This project was a close collaboration with the backend team to ensure the system ran efficiently and met user needs.",
         status: "finished",
         repository: "https://github.com/GlobalCodeCreation/Ruang-Raya",
@@ -50,7 +52,7 @@ export const ProjectsData = [
 
     {
         name: "Furniture Website",
-        image: "https://drive.google.com/uc?export=view&id=1WIInAzcb7zwFlAZEmXx_b0tVzXT_5O0L",
+        image: `${baseUrl}1WIInAzcb7zwFlAZEmXx_b0tVzXT_5O0L`,
         description: "I developed a modern and responsive furniture e-commerce website aimed at helping small to medium-sized businesses (UMKM) showcase and sell their products online. I was responsible for building the entire frontend using Next.js and Tailwind CSS, ensuring a seamless browsing experience across devices. The UI/UX was designed to highlight product visuals and improve user navigation, resulting in a clean and conversion-friendly interface. The project emphasized performance, scalability, and mobile optimization.",
         status: "finished",
         repository: "https://github.com/GlobalCodeCreation/Langit-Saji",
@@ -66,7 +68,7 @@ export const ProjectsData = [
 
     {
         name: "GC Tools",
-        image: "https://drive.google.com/uc?export=view&id=14Hf4-SEBq6sf9rxzvogWkwhpJHmQmrL1",
+        image: `${baseUrl}14Hf4-SEBq6sf9rxzvogWkwhpJHmQmrL1`,
         description: "GC Tools is a developer tool website that provides ready-to-use frontend components to simplify the coding process. It offers copyable UI snippets such as forms, buttons, cards, and layout patterns, allowing developers to quickly integrate clean, consistent designs into their projects. Built with React.js and Tailwind CSS, the site focuses on developer efficiency, reusability, and responsive design.",
         status: "processed",
         repository: "https://github.com/Muhammad-Khairul-Kholqi/ApkTools",
@@ -82,7 +84,7 @@ export const ProjectsData = [
 
     {
         name: "Company Profile",
-        image: "https://drive.google.com/uc?export=view&id=130lgksDM31oxG6Qv7T7P2_3a0fnEXRKU",
+        image: `${baseUrl}130lgksDM31oxG6Qv7T7P2_3a0fnEXRKU`,
         description: "Company Profile is a fullstack website project designed to showcase a company's information, services, and portfolio in a clean and professional format. I led the project as both Project Manager and Fullstack Developer, overseeing the entire development process. The frontend was built using React.js and Tailwind CSS, while the backend was developed with Express.js and MySQL. I also designed the user interface using Figma, conducted API testing with Postman, and used Docker for development and deployment support. The goal was to create a responsive, scalable, and easily maintainable web application.",
         status: "finished",
         repository: "",
@@ -99,7 +101,7 @@ export const ProjectsData = [
     
     {
         name: "Daily Agenda",
-        image: "https://drive.google.com/uc?export=view&id=1_2K61C6OF-5vBtm_hWolbSGDeWNHlgyX",
+        image: `${baseUrl}1_2K61C6OF-5vBtm_hWolbSGDeWNHlgyX`,
         description: "Daily Agenda is a simple web application designed to help users manage their daily tasks and activities efficiently. I developed the frontend using Laravel Blade templates and CSS, focusing on creating a clean user interface and intuitive layout for task management. The application includes basic CRUD features for adding, updating, and deleting daily tasks, and uses MySQL for data storage. This project emphasizes ease of use, responsiveness, and clarity in user experience.",
         status: "finished",
         repository: "",
@@ -114,7 +116,7 @@ export const ProjectsData = [
 
     {
         name: "School Website",
-        image: "https://drive.google.com/uc?export=view&id=1FiwwGb2WNuGAxurbW7aQDcoRYM98xUfX",
+        image: `${baseUrl}1FiwwGb2WNuGAxurbW7aQDcoRYM98xUfX`,
         description: "School Website is a web-based platform developed to manage and present information related to a school's activities, announcements, and administration. I designed the user interface using Figma with a focus on usability for both students and administrators. The website was built using native PHP and styled with CSS, prioritizing core functionality and a clean, structured layout. MySQL was used to design and manage the database, enabling dynamic content such as news updates, student data, and administrative tools.",
         status: "finished",
         repository: "https://github.com/Muhammad-Khairul-Kholqi/WebsiteSchool",
@@ -130,7 +132,7 @@ export const ProjectsData = [
 
     {
         name: "Personal Workspace",
-        image: "https://drive.google.com/uc?export=view&id=1WhkPrAN8si_0VAgik-USfEcp2Ue_t9EF",
+        image: `${baseUrl}1WhkPrAN8si_0VAgik-USfEcp2Ue_t9EF`,
         description: "Personal Workspace is a web application designed to help individuals organize their work and manage personal tasks more efficiently. I developed the entire frontend using Next.js and Tailwind CSS, focusing on clean design, responsive layout, and a well-structured component system. The goal of this project was to create a seamless and intuitive user experience for managing daily workflows, notes, and productivity tools in one place.",
         status: "processed",
         repository: "https://github.com/Muhammad-Khairul-Kholqi/PersonalWorkspace",
@@ -145,7 +147,7 @@ export const ProjectsData = [
 
     {
         name: "Dynamic Box Styler",
-        image: "https://drive.google.com/uc?export=view&id=1_Ult6ihYm31gw1M3Rwa6iMir2i_8_WJr",
+        image: `${baseUrl}1_Ult6ihYm31gw1M3Rwa6iMir2i_8_WJr`,
         description: "Dynamic Box Styler adalah aplikasi web sederhana yang dibuat untuk membantu developer mendesain box dengan styling dasar secara visual. Pengguna dapat menyesuaikan properti seperti ukuran, padding, margin, border, dan warna secara langsung, lalu menyalin kode CSS-nya untuk digunakan dalam proyek mereka. Aplikasi ini dibangun menggunakan HTML, CSS, dan JavaScript dengan fokus pada kemudahan penggunaan dan tampilan real-time.",
         status: "finished",
         repository: "https://github.com/Muhammad-Khairul-Kholqi/DynamicBoxStyler",
@@ -161,7 +163,7 @@ export const ProjectsData = [
 
     {
         name: "Pharmacy Website",
-        image: "https://drive.google.com/uc?export=view&id=18IQRrVCINuG0f_wAx3l_o0vqq5JNc_v_",
+        image: `${baseUrl}18IQRrVCINuG0f_wAx3l_o0vqq5JNc_v_`,
         description: "Pharmacy Website is a web application designed to facilitate simple medicine transactions between users and pharmacists. Built using Laravel, Bootstrap, and MySQL, the platform allows users to browse available medicines, make purchase requests, and manage basic order details. Pharmacists can process incoming orders and manage inventory through a responsive and user-friendly interface. The project focuses on accessibility, functionality, and ease of use for both parties.",
         status: "finished",
         repository: "https://github.com/Muhammad-Khairul-Kholqi/ApotekApp",
