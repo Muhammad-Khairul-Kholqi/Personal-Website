@@ -16,7 +16,7 @@ export default function ContactPage() {
                     </div>
                 </a>
 
-                <a href="https://www.instagram.com/khairul.kh_/" className="border border-gray-200 p-5 rounded-xl flex items-center gap-3 hover:shadow-lg duration-300">
+                <a href="https://github.com/Muhammad-Khairul-Kholqi/" className="border border-gray-200 p-5 rounded-xl flex items-center gap-3 hover:shadow-lg duration-300">
                     <Github className="text-green-600" />
                     <div>
                         <h2 className="text-xl">Explore the code</h2>
@@ -24,7 +24,7 @@ export default function ContactPage() {
                     </div>
                 </a>
 
-                <a href="https://github.com/Muhammad-Khairul-Kholqi/" className="border border-gray-200 p-5 rounded-xl flex items-center gap-3 hover:shadow-lg duration-300">
+                <a href="https://www.instagram.com/khairul.kh_/" className="border border-gray-200 p-5 rounded-xl flex items-center gap-3 hover:shadow-lg duration-300">
                     <Instagram className="text-red-600" />
                     <div>
                         <h2 className="text-xl">Follow me</h2>
