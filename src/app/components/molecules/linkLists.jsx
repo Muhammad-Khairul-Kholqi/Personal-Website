@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, Leaf, PencilLine, Package, LayoutGrid, Send, ScrollText } from "lucide-react";
+import { Home, Leaf, PencilLine, Package, Send, ScrollText } from "lucide-react";
 import LinkItem from "@/app/components/atoms/linkItem";
 
 export default function LinkLists() {
@@ -10,7 +10,6 @@ export default function LinkLists() {
             <LinkItem icon={Leaf} label="About" url="/pages/about" />
             <LinkItem icon={PencilLine} label="Blogs" url="/pages/blogs" />
             <LinkItem icon={Package} label="Projects" url="/pages/projects" />
-            {/* <LinkItem icon={LayoutGrid} label="Dashboard" url="/profile" /> */}
             <LinkItem icon={ScrollText} label="Certificates" url="/pages/certificates" />
             <LinkItem icon={Send} label="Contacts" url="/pages/contacts" />
         </div>
