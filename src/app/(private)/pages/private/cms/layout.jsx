@@ -4,7 +4,7 @@ export default function CmsLayout({ children }) {
     return (
         <div>
             <Navbar />
-            <div className="flex justify-center mt-[65px] p-5 bg-red-200">
+            <div className="flex justify-center mt-[65px] p-5">
                 <div className="w-full max-w-[1300px]">
                     {children}
                 </div>
