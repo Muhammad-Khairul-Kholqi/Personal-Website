@@ -33,17 +33,38 @@ export default function CardSection() {
         },
     ]
 
+    const colorClasses = {
+        green: {
+            bg: "bg-green-100",
+            text: "text-green-600",
+        },
+        red: {
+            bg: "bg-red-100",
+            text: "text-red-600",
+        },
+        blue: {
+            bg: "bg-blue-100",
+            text: "text-blue-600",
+        },
+        yellow: {
+            bg: "bg-yellow-100",
+            text: "text-yellow-600",
+        },
+    }
+
     return (
         <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 items-center gap-5">
             {cards.map((card, index) => (
                 <Link
                     key={index}
                     href={card.link}
-                    className="border border-gray-200 p-5 rounded-xl space-y-3 hover:shadow-lg duration-300 group"
+                    className="border border-gray-200 p-5 rounded-xl space-y-3 duration-300 group"
                 >
                     <div className="flex">
-                        <div className={`bg-${card.color}-100 px-4 py-2 rounded-lg`}>
-                            <span className={`text-${card.color}-600 text-sm`}>{card.title}</span>
+                        <div className={`${colorClasses[card.color].bg} px-4 py-2 rounded-lg`}>
+                            <span className={`${colorClasses[card.color].text} text-sm`}>
+                                {card.title}
+                            </span>
                         </div>
                     </div>
                     <p className="text-gray-700">{card.description}</p>
@@ -56,5 +77,5 @@ export default function CardSection() {
                 </Link>
             ))}
         </div>
-    )   
+    )
 }
