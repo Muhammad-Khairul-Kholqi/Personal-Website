@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useState } from "react"
-import { useSearchParams, useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { Search } from "lucide-react"
 import { getServices } from "@/app/api/servicesApi"
 import Pagination from "@/app/components/molecules/pagination"
@@ -10,7 +10,7 @@ export default function ServicesPage() {
     const [loading, setLoading] = useState(true)
     const [search, setSearch] = useState("")
 
-    const searchParams = useSearchParams()
+    const searchParams = usePathname()
     const router = useRouter()
 
     const page = parseInt(searchParams.get("page") || "1", 10)
