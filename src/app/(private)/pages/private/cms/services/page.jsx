@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useState } from "react"
-import { usePathname, useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { Search } from "lucide-react"
 import { getServices } from "@/app/api/servicesApi"
 import Pagination from "@/app/components/molecules/pagination"
@@ -9,11 +9,10 @@ export default function ServicesPage() {
     const [services, setServices] = useState([])
     const [loading, setLoading] = useState(true)
     const [search, setSearch] = useState("")
+    const [page, setPage] = useState(1)
 
-    const searchParams = usePathname()
     const router = useRouter()
-
-    const page = parseInt(searchParams.get("page") || "1", 10)
+    const pathname = usePathname()
     const perPage = 5
 
     useEffect(() => {
@@ -26,6 +25,16 @@ export default function ServicesPage() {
         fetchData()
     }, [])
 
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const params = new URLSearchParams(window.location.search)
+            const currentPage = parseInt(params.get("page") || "1", 10)
+            const currentSearch = params.get("search") || ""
+            setPage(currentPage)
+            setSearch(currentSearch)
+        }
+    }, [])
+
     const filtered = services.filter((service) =>
         service.title.toLowerCase().includes(search.toLowerCase())
     )
@@ -33,8 +42,24 @@ export default function ServicesPage() {
     const totalPages = Math.ceil(filtered.length / perPage)
     const paginated = filtered.slice((page - 1) * perPage, page * perPage)
 
+    const updateQuery = (newPage, newSearch) => {
+        const params = new URLSearchParams(window.location.search)
+        if (newPage) params.set("page", newPage)
+        if (newSearch !== undefined) {
+            params.set("search", newSearch)
+            params.set("page", "1") 
+        }
+        router.push(`${pathname}?${params.toString()}`)
+    }
+
     const handlePageChange = (newPage) => {
-        router.push(`?page=${newPage}`)
+        setPage(newPage)
+        updateQuery(newPage, undefined)
+    }
+
+    const handleSearchChange = (value) => {
+        setSearch(value)
+        updateQuery(undefined, value)
     }
 
     return (
@@ -50,7 +75,7 @@ export default function ServicesPage() {
                             placeholder="Search services..."
                             className="w-full outline-none"
                             value={search}
-                            onChange={(e) => setSearch(e.target.value)}
+                            onChange={(e) => handleSearchChange(e.target.value)}
                         />
                     </div>
                     <button className="bg-black hover:bg-black/80 text-white px-5 py-2 rounded-md cursor-pointer transition-colors w-full sm:max-w-[15%]">
@@ -65,22 +90,24 @@ export default function ServicesPage() {
                         <table className="w-full text-sm text-left">
                             <thead className="text-sm uppercase bg-gray-100">
                                 <tr>
-                                    <th scope="col" className="px-6 py-3">No</th>
-                                    <th scope="col" className="px-6 py-3">Title</th>
-                                    <th scope="col" className="px-6 py-3">Description</th>
-                                    <th scope="col" className="px-6 py-3">Hashtag</th>
-                                    <th scope="col" className="px-6 py-3">Action</th>
+                                    <th className="px-6 py-3">No</th>
+                                    <th className="px-6 py-3">Title</th>
+                                    <th className="px-6 py-3">Description</th>
+                                    <th className="px-6 py-3">Hashtag</th>
+                                    <th className="px-6 py-3">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {paginated.length > 0 ? (
                                     paginated.map((service, idx) => (
                                         <tr key={service.id} className="bg-white border-b border-gray-200">
-                                            <td className="px-6 py-4 align-top">{(page - 1) * perPage + idx + 1}</td>
+                                            <td className="px-6 py-4 align-top">
+                                                {(page - 1) * perPage + idx + 1}
+                                            </td>
                                             <td className="px-6 py-4 align-top">{service.title}</td>
                                             <td className="px-6 py-4 align-top max-w-[300px]">
                                                 <div className="max-h-[120px] overflow-y-auto pr-2 scroll-thin">
-                                                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. Laboriosam ullam recusandae aut hic ea aliquam dolorum optio provident sed eos. Consectetur fuga ullam doloribus id porro eum incidunt, excepturi ex ipsa? Sint velit quaerat molestias dolorem dolorum veniam, perspiciatis quas porro. Possimus similique odit alias exercitationem adipisci sequi illo, dignissimos sapiente architecto inventore. Ipsum corrupti minus culpa excepturi dignissimos beatae optio, possimus itaque eum harum eaque mollitia nobis provident quasi vero aperiam illo sunt quos voluptatem inventore nam natus dolores quam officia. Veritatis, cum! Fuga vero laboriosam dolorum aspernatur, reiciendis autem atque optio! Hic consequatur velit odio culpa dolor doloribus!
+                                                    {service.description}
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 align-top">#{service.hashtag}</td>
@@ -92,7 +119,7 @@ export default function ServicesPage() {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="4" className="text-center py-5 text-gray-500">
+                                        <td colSpan="5" className="text-center py-5 text-gray-500">
                                             No data found
                                         </td>
                                     </tr>

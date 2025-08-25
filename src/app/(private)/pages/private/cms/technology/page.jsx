@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useState } from "react"
-import { useSearchParams, useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { Search } from "lucide-react"
 import { getTechnologies } from "@/app/api/technologyApi"
 import Pagination from "@/app/components/molecules/pagination"
@@ -9,11 +9,10 @@ export default function TechnologyPage() {
     const [technologies, setTechnologies] = useState([])
     const [loading, setLoading] = useState(true)
     const [search, setSearch] = useState("")
+    const [page, setPage] = useState(1)
 
-    const searchParams = useSearchParams()
     const router = useRouter()
-
-    const page = parseInt(searchParams.get("page") || "1", 10)
+    const pathname = usePathname()
     const perPage = 5
 
     useEffect(() => {
@@ -26,6 +25,16 @@ export default function TechnologyPage() {
         fetchData()
     }, [])
 
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const params = new URLSearchParams(window.location.search)
+            const currentPage = parseInt(params.get("page") || "1", 10)
+            const currentSearch = params.get("search") || ""
+            setPage(currentPage)
+            setSearch(currentSearch)
+        }
+    }, [])
+
     const filtered = technologies.filter((tech) =>
         tech.name.toLowerCase().includes(search.toLowerCase())
     )
@@ -33,8 +42,24 @@ export default function TechnologyPage() {
     const totalPages = Math.ceil(filtered.length / perPage)
     const paginated = filtered.slice((page - 1) * perPage, page * perPage)
 
+    const updateQuery = (newPage, newSearch) => {
+        const params = new URLSearchParams(window.location.search)
+        if (newPage) params.set("page", newPage)
+        if (newSearch !== undefined) {
+            params.set("search", newSearch)
+            params.set("page", "1")
+        }
+        router.push(`${pathname}?${params.toString()}`)
+    }
+
     const handlePageChange = (newPage) => {
-        router.push(`?page=${newPage}`)
+        setPage(newPage)
+        updateQuery(newPage, undefined)
+    }
+
+    const handleSearchChange = (value) => {
+        setSearch(value)
+        updateQuery(undefined, value)
     }
 
     return (
@@ -50,7 +75,7 @@ export default function TechnologyPage() {
                             placeholder="Search technology..."
                             className="w-full outline-none"
                             value={search}
-                            onChange={(e) => setSearch(e.target.value)}
+                            onChange={(e) => handleSearchChange(e.target.value)}
                         />
                     </div>
                     <button className="bg-black hover:bg-black/80 text-white px-5 py-2 rounded-md cursor-pointer transition-colors w-full sm:max-w-[15%]">
@@ -65,10 +90,10 @@ export default function TechnologyPage() {
                         <table className="w-full text-sm text-left">
                             <thead className="text-sm uppercase bg-gray-100">
                                 <tr>
-                                    <th scope="col" className="px-6 py-3">No</th>
-                                    <th scope="col" className="px-6 py-3">Technology Name</th>
-                                    <th scope="col" className="px-6 py-3">Image</th>
-                                    <th scope="col" className="px-6 py-3">Action</th>
+                                    <th className="px-6 py-3">No</th>
+                                    <th className="px-6 py-3">Technology Name</th>
+                                    <th className="px-6 py-3">Image</th>
+                                    <th className="px-6 py-3">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
