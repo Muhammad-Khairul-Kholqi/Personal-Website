@@ -66,3 +66,26 @@
 .animate-slide-right {
   animation: slide-right 40s linear infinite;
 }
+
+.scroll-thin::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scroll-thin::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.scroll-thin::-webkit-scrollbar-thumb {
+  background: #a3a3a3;
+  border-radius: 4px;
+}
+
+.scroll-thin::-webkit-scrollbar-thumb:hover {
+  background: #737373;
+}
+
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: #a3a3a3 none;
+}
