@@ -7,7 +7,11 @@ import {
     Settings,
     LogOut,
     X,
-    ChevronRight
+    ChevronRight,
+    Contact,
+    SquarePen,
+    GraduationCap,
+    Clapperboard
 } from "lucide-react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
@@ -27,26 +31,38 @@ export default function SidebarCms({ isOpen, onClose, onLogout }) {
         {
             icon: Home,
             label: "Dashboard",
-            href: "/cms/dashboard",
+            href: "/pages/private/cms/dashboard",
         },
         {
-            icon: Users,
-            label: "Users",
+            icon: Contact,
+            label: "Contact",
             href: "/cms/users",
         },
         {
-            icon: FileText,
-            label: "Content",
-            href: "/cms/content",
+            icon: SquarePen,
+            label: "Portfolio",
             submenu: [
-                { label: "Articles", href: "/cms/content/articles" },
-                { label: "Pages", href: "/cms/content/pages" },
+                { label: "Careers", href: "/cms/content/pages" },
+                { label: "Services", href: "/pages/private/cms/services" },
+                { label: "Soft Skills", href: "/cms/content/pages" },
             ]
         },
         {
-            icon: Settings,
-            label: "Settings",
-            href: "/cms/settings",
+            icon: GraduationCap,
+            label: "Education",
+            submenu: [
+                { label: "Educations", href: "/cms/content/pages" },
+                { label: "Certificates", href: "/cms/content/pages" },
+                { label: "Technologies", href: "/cms/content/articles" },
+            ]
+        },
+        {
+            icon: Clapperboard,
+            label: "Content",
+            submenu: [
+                { label: "Blogs", href: "/cms/content/pages" },
+                { label: "Projects", href: "/cms/content/pages" },
+            ]
         },
     ]
 

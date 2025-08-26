@@ -1,71 +1,112 @@
-"use client"
-import { useEffect, useState } from "react"
-import { useRouter, usePathname } from "next/navigation"
-import { Search } from "lucide-react"
-import { getServices } from "@/app/api/servicesApi"
-import Pagination from "@/app/components/molecules/pagination"
+"use client";
+import { useEffect, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { Search } from "lucide-react";
+import Swal from "sweetalert2";
+import { GetServices, CreateService, UpdateService, DeleteService } from "@/app/api/servicesApi";
+import Pagination from "@/app/components/molecules/pagination";
+import DataModal from "@/app/components/modals/dataModal";
 
-export default function ServicesPage() {
-    const [services, setServices] = useState([])
-    const [loading, setLoading] = useState(true)
-    const [search, setSearch] = useState("")
-    const [page, setPage] = useState(1)
+export default function ServicesPage() {    
+    const [services, setServices] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [search, setSearch] = useState("");
+    const [page, setPage] = useState(1);
 
-    const router = useRouter()
-    const pathname = usePathname()
-    const perPage = 5
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalMode, setModalMode] = useState("create"); 
+    const [selectedService, setSelectedService] = useState(null);
+
+    const router = useRouter();
+    const pathname = usePathname();
+    const perPage = 5;
 
     useEffect(() => {
         async function fetchData() {
-            setLoading(true)
-            const data = await getServices()
-            setServices(data)
-            setLoading(false)
+            setLoading(true);
+            const data = await GetServices();
+            setServices(data);
+            setLoading(false);
         }
-        fetchData()
-    }, [])
+        fetchData();
+    }, []);
 
     useEffect(() => {
         if (typeof window !== "undefined") {
-            const params = new URLSearchParams(window.location.search)
-            const currentPage = parseInt(params.get("page") || "1", 10)
-            const currentSearch = params.get("search") || ""
-            setPage(currentPage)
-            setSearch(currentSearch)
+            const params = new URLSearchParams(window.location.search);
+            setPage(parseInt(params.get("page") || "1", 10));
+            setSearch(params.get("search") || "");
         }
-    }, [])
+    }, []);
 
     const filtered = services.filter((service) =>
         service.title.toLowerCase().includes(search.toLowerCase())
-    )
+    );
 
-    const totalPages = Math.ceil(filtered.length / perPage)
-    const paginated = filtered.slice((page - 1) * perPage, page * perPage)
+    const totalPages = Math.ceil(filtered.length / perPage);
+    const paginated = filtered.slice((page - 1) * perPage, page * perPage);
 
     const updateQuery = (newPage, newSearch) => {
-        const params = new URLSearchParams(window.location.search)
-        if (newPage) params.set("page", newPage)
+        const params = new URLSearchParams(window.location.search);
+        if (newPage) params.set("page", newPage);
         if (newSearch !== undefined) {
-            params.set("search", newSearch)
-            params.set("page", "1") 
+            params.set("search", newSearch);
+            params.set("page", "1");
         }
-        router.push(`${pathname}?${params.toString()}`)
-    }
+        router.push(`${pathname}?${params.toString()}`);
+    };
 
     const handlePageChange = (newPage) => {
-        setPage(newPage)
-        updateQuery(newPage, undefined)
-    }
+        setPage(newPage);
+        updateQuery(newPage, undefined);
+    };
 
     const handleSearchChange = (value) => {
-        setSearch(value)
-        updateQuery(undefined, value)
-    }
+        setSearch(value);
+        updateQuery(undefined, value);
+    };
+
+    const openCreateModal = () => {
+        setModalMode("create");
+        setSelectedService(null);
+        setIsModalOpen(true);
+    };
+
+    const openEditModal = (service) => {
+        setModalMode("edit");
+        setSelectedService(service);
+        setIsModalOpen(true);
+    };
+
+    const handleModalSubmit = async (formData) => {
+        if (modalMode === "create") {
+            const newService = await CreateService(formData);
+            setServices((prev) => [newService, ...prev]);
+        } else if (modalMode === "edit") {
+            const updatedService = await UpdateService(selectedService.id, formData);
+            setServices((prev) =>
+                prev.map((s) => (s.id === selectedService.id ? updatedService : s))
+            );
+        }
+    };
+
+    const handleDelete = async (service) => {
+        const confirm = await Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, delete it!",
+        });
+        if (confirm.isConfirmed) {
+            await DeleteService(service.id);
+            setServices((prev) => prev.filter((s) => s.id !== service.id));
+            Swal.fire("Deleted!", "Your service has been deleted.", "success");
+        }
+    };
 
     return (
         <div>
-            <h1 className="text-xl font-semibold mb-5">Services</h1>
-
             <div className="border border-gray-200 p-5 rounded-xl">
                 <div className="w-full flex flex-col sm:flex-row items-center gap-3">
                     <div className="w-full flex items-center gap-3 border border-gray-200 rounded-md px-3 py-2">
@@ -78,7 +119,10 @@ export default function ServicesPage() {
                             onChange={(e) => handleSearchChange(e.target.value)}
                         />
                     </div>
-                    <button className="bg-black hover:bg-black/80 text-white px-5 py-2 rounded-md cursor-pointer transition-colors w-full sm:max-w-[15%]">
+                    <button
+                        className="bg-black hover:bg-black/80 text-white px-5 py-2 rounded-md cursor-pointer transition-colors w-full sm:max-w-[15%]"
+                        onClick={openCreateModal}
+                    >
                         Add Service
                     </button>
                 </div>
@@ -101,19 +145,25 @@ export default function ServicesPage() {
                                 {paginated.length > 0 ? (
                                     paginated.map((service, idx) => (
                                         <tr key={service.id} className="bg-white border-b border-gray-200">
-                                            <td className="px-6 py-4 align-top">
-                                                {(page - 1) * perPage + idx + 1}
-                                            </td>
+                                            <td className="px-6 py-4 align-top">{(page - 1) * perPage + idx + 1}</td>
                                             <td className="px-6 py-4 align-top">{service.title}</td>
                                             <td className="px-6 py-4 align-top max-w-[300px]">
-                                                <div className="max-h-[120px] overflow-y-auto pr-2 scroll-thin">
-                                                    {service.description}
-                                                </div>
+                                                <div className="max-h-[120px] overflow-y-auto pr-2 scroll-thin">{service.description}</div>
                                             </td>
                                             <td className="px-6 py-4 align-top">#{service.hashtag}</td>
                                             <td className="px-6 py-4 align-top flex items-center gap-3">
-                                                <button className="text-blue-400 bg-blue-100 hover:bg-blue-200 hover:text-blue-500 px-3 py-1 rounded-md cursor-pointer">Edit</button>
-                                                <button className="text-red-400 bg-red-100 hover:bg-red-200 hover:text-red-500 px-3 py-1 rounded-md cursor-pointer">Delete</button>
+                                                <button
+                                                    className="text-blue-400 bg-blue-100 hover:bg-blue-200 hover:text-blue-500 px-3 py-1 rounded-md cursor-pointer"
+                                                    onClick={() => openEditModal(service)}
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    className="text-red-400 bg-red-100 hover:bg-red-200 hover:text-red-500 px-3 py-1 rounded-md cursor-pointer"
+                                                    onClick={() => handleDelete(service)}
+                                                >
+                                                    Delete
+                                                </button>
                                             </td>
                                         </tr>
                                     ))
@@ -130,13 +180,22 @@ export default function ServicesPage() {
                 </div>
 
                 {!loading && (
-                    <Pagination
-                        page={page}
-                        totalPages={totalPages}
-                        onPageChange={handlePageChange}
-                    />
+                    <Pagination page={page} totalPages={totalPages} onPageChange={handlePageChange} />
                 )}
             </div>
+
+            <DataModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                title={modalMode === "create" ? "Create Service" : "Edit Service"}
+                fields={[
+                    { name: "title", label: "Title", required: true },
+                    { name: "description", label: "Description", required: true },
+                    { name: "hashtag", label: "Hashtag", required: true },
+                ]}
+                onSubmit={handleModalSubmit}
+                initialData={selectedService || {}}
+            />
         </div>
-    )
+    );
 }

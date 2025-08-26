@@ -2,9 +2,11 @@
 
 import {
     Menu,
+    User
 } from "lucide-react"
 import { useState, useEffect } from "react"
 import { usePathname } from "next/navigation"
+import Link from "next/link"
 
 export default function HeaderCms({ onToggleSidebar }) {
     const pathname = usePathname()
@@ -46,7 +48,9 @@ export default function HeaderCms({ onToggleSidebar }) {
                 </div>
             </div>
 
-            fsf
+            <Link href="" className="bg-gray-200 w-10 h-10 rounded-full flex items-center justify-center text-gray-600 hover:bg-gray-300 transition-colors">
+                <User size={22} />
+            </Link>
 
             {(showNotifications || showUserMenu) && (
                 <div

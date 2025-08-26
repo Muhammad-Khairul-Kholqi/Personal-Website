@@ -4,105 +4,60 @@ import Image from "next/image";
 import { useState } from "react";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { LoginUser } from "@/app/api/authApi";
 import Swal from "sweetalert2";
 
 export default function LoginPage() {
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [formData, setFormData] = useState({
-        email: '',
-        password: ''
-    });
-
+    const [formData, setFormData] = useState({ email: '', password: '' });
     const router = useRouter();
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
+        setFormData(prev => ({ ...prev, [name]: value }));
     };
 
     const handleLogin = async (e) => {
         e.preventDefault();
 
         if (!formData.email || !formData.password) {
-            await Swal.fire({
+            return Swal.fire({
                 icon: 'warning',
                 title: 'Warning!',
                 text: 'Email and password are required!',
                 confirmButtonColor: '#000000'
             });
-            return;
         }
 
         setIsLoading(true);
 
-        try {
-            console.log('Attempting login with:', {
-                email: formData.email,
-                password: '***'
+        const { ok, data } = await LoginUser(formData.email, formData.password);
+
+        if (ok) {
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+
+            await Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: 'Login successful! Welcome back.',
+                confirmButtonColor: '#000000',
+                timer: 2000,
+                showConfirmButton: false
             });
 
-            console.log('API URL:', `${process.env.NEXT_PUBLIC_BASE_API_LINK}/api/auth/login`);
-
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_LINK}/api/auth/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: formData.email,
-                    password: formData.password
-                }),
-            });
-
-            console.log('Response status:', response.status);
-            console.log('Response headers:', response.headers);
-
-            const data = await response.json();
-            console.log('Response data:', data);
-
-            if (response.ok) {
-                console.log('Login successful, saving to localStorage');
-
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('user', JSON.stringify(data.user));
-
-                console.log('Data saved to localStorage');
-
-                await Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: 'Login successful! Welcome back.',
-                    confirmButtonColor: '#000000',
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-
-                console.log('Redirecting to dashboard...');
-                router.push('/pages/private/cms/dashboard');
-            } else {
-                console.error('Login failed:', data);
-                await Swal.fire({
-                    icon: 'error',
-                    title: 'Login Failed!',
-                    text: data.error || 'Incorrect email or password.',
-                    confirmButtonColor: '#000000'
-                });
-            }
-        } catch (error) {
-            console.error('Login error:', error);
+            router.push('/pages/private/cms/dashboard');
+        } else {
             await Swal.fire({
                 icon: 'error',
-                title: 'Error!',
-                text: 'Unable to connect to the server. Please try again.',
+                title: 'Login Failed!',
+                text: data.error || 'Incorrect email or password.',
                 confirmButtonColor: '#000000'
             });
-        } finally {
-            setIsLoading(false);
         }
+
+        setIsLoading(false);
     };
 
     return (
@@ -161,13 +116,10 @@ export default function LoginPage() {
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className="w-full bg-black hover:bg-black/80 disabled:bg-gray-400 disabled:cursor-not-allowed text-white py-2 rounded-md transition-colors flex items-center justify-center"
+                        className="w-full bg-black hover:bg-black/80 disabled:bg-gray-400 disabled:cursor-not-allowed cursor-pointer text-white py-2 rounded-md transition-colors flex items-center justify-center"
                     >
                         {isLoading ? (
-                            <div className="flex items-center space-x-2">
-                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                <span>Loading...</span>
-                            </div>
+                            <span>Loading...</span>
                         ) : (
                             'Login'
                         )}
