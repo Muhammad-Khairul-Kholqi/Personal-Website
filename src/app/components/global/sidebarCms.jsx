@@ -39,8 +39,8 @@ export default function SidebarCms({ isOpen, onClose, onLogout }) {
             icon: SquarePen,
             label: "Portfolio",
             submenu: [
-                { label: "Career", href: "/cms/content/pages" },
-                { label: "Service", href: "/pages/private/cms/services" },
+                { label: "Career", href: "/pages/private/cms/career" },
+                { label: "Service", href: "/pages/private/cms/service" },
                 { label: "Soft Skill", href: "/cms/content/pages" },
             ]
         },
@@ -50,7 +50,7 @@ export default function SidebarCms({ isOpen, onClose, onLogout }) {
             submenu: [
                 { label: "Education", href: "/cms/content/pages" },
                 { label: "Certificate", href: "/cms/content/pages" },
-                { label: "Technology", href: "/cms/content/articles" },
+                { label: "Technology", href: "/pages/private/cms/technology" },
             ]
         },
         {

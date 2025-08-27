@@ -159,7 +159,7 @@ export default function ContactsPage() {
                                                             </span>
                                                         );
                                                     })()
-                                                ) : null}
+                                                ) : "No icon"}
                                             </td>
                                             <td className="px-6 py-4 align-top">{contact.title}</td>
                                             <td className="px-6 py-4 align-top max-w-[300px]">
