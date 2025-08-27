@@ -123,7 +123,7 @@ export default function CmsLayout({ children }) {
 
                 <main className="flex-1 overflow-auto">
                     <div className="p-6">
-                        <div className="max-w-7xl mx-auto">
+                        <div className="mx-auto">
                             {children}
                         </div>
                     </div>

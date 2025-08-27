@@ -2,9 +2,6 @@
 
 import {
     Home,
-    Users,
-    FileText,
-    Settings,
     LogOut,
     X,
     ChevronRight,
@@ -36,24 +33,24 @@ export default function SidebarCms({ isOpen, onClose, onLogout }) {
         {
             icon: Contact,
             label: "Contact",
-            href: "/cms/users",
+            href: "/pages/private/cms/contact",
         },
         {
             icon: SquarePen,
             label: "Portfolio",
             submenu: [
-                { label: "Careers", href: "/cms/content/pages" },
-                { label: "Services", href: "/pages/private/cms/services" },
-                { label: "Soft Skills", href: "/cms/content/pages" },
+                { label: "Career", href: "/cms/content/pages" },
+                { label: "Service", href: "/pages/private/cms/services" },
+                { label: "Soft Skill", href: "/cms/content/pages" },
             ]
         },
         {
             icon: GraduationCap,
             label: "Education",
             submenu: [
-                { label: "Educations", href: "/cms/content/pages" },
-                { label: "Certificates", href: "/cms/content/pages" },
-                { label: "Technologies", href: "/cms/content/articles" },
+                { label: "Education", href: "/cms/content/pages" },
+                { label: "Certificate", href: "/cms/content/pages" },
+                { label: "Technology", href: "/cms/content/articles" },
             ]
         },
         {

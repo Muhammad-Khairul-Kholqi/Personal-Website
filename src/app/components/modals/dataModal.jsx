@@ -34,7 +34,7 @@ export default function DataModal({
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black/30 flex justify-center items-center z-50">
+        <div className="fixed inset-0 bg-black/30 flex justify-center items-center z-50 px-5">
             <div className="bg-white rounded-xl p-6 w-full max-w-md">
                 <h2 className="text-xl font-semibold mb-4">{title}</h2>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">

@@ -42,7 +42,7 @@ export default function HeaderCms({ onToggleSidebar }) {
                 </button>
 
                 <div>
-                    <h1 className="text-xl font-semibold text-gray-900">
+                    <h1 className="text-lg font-semibold text-gray-900">
                         {getPageTitle()}
                     </h1>
                 </div>

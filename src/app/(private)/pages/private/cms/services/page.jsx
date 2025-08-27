@@ -6,6 +6,9 @@ import Swal from "sweetalert2";
 import { GetServices, CreateService, UpdateService, DeleteService } from "@/app/api/servicesApi";
 import Pagination from "@/app/components/molecules/pagination";
 import DataModal from "@/app/components/modals/dataModal";
+import * as Icons from "lucide-react"
+
+console.log(Object.keys(Icons))
 
 export default function ServicesPage() {    
     const [services, setServices] = useState([]);
@@ -135,6 +138,7 @@ export default function ServicesPage() {
                             <thead className="text-sm uppercase bg-gray-100">
                                 <tr>
                                     <th className="px-6 py-3">No</th>
+                                    <th className="px-6 py-3">Icon</th>
                                     <th className="px-6 py-3">Title</th>
                                     <th className="px-6 py-3">Description</th>
                                     <th className="px-6 py-3">Hashtag</th>
@@ -146,6 +150,18 @@ export default function ServicesPage() {
                                     paginated.map((service, idx) => (
                                         <tr key={service.id} className="bg-white border-b border-gray-200">
                                             <td className="px-6 py-4 align-top">{(page - 1) * perPage + idx + 1}</td>
+                                            <td className="px-6 py-4 align-top">
+                                                {service.icon && Icons[service.icon] ? (
+                                                    (() => {
+                                                        const IconComponent = Icons[service.icon];
+                                                        return (
+                                                            <span className="text-gray-600">
+                                                                <IconComponent size={18} />
+                                                            </span>
+                                                        );
+                                                    })()
+                                                ) : null}
+                                            </td>
                                             <td className="px-6 py-4 align-top">{service.title}</td>
                                             <td className="px-6 py-4 align-top max-w-[300px]">
                                                 <div className="max-h-[120px] overflow-y-auto pr-2 scroll-thin">{service.description}</div>
@@ -192,6 +208,7 @@ export default function ServicesPage() {
                     { name: "title", label: "Title", required: true },
                     { name: "description", label: "Description", required: true },
                     { name: "hashtag", label: "Hashtag", required: true },
+                    { name: "icon", label: "Icon", required: true },
                 ]}
                 onSubmit={handleModalSubmit}
                 initialData={selectedService || {}}
