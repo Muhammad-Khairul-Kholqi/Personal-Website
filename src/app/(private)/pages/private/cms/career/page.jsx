@@ -9,6 +9,21 @@ import { getTechnologies } from "@/app/api/technologyApi";
 import Pagination from "@/app/components/molecules/pagination";
 import DataModal from "@/app/components/modals/dataModal";
 
+const CAREER_TYPES = [
+    { value: "full_time", label: "Full Time" },
+    { value: "part_time", label: "Part Time" },
+    { value: "contract", label: "Contract" },
+    { value: "internship", label: "Internship" },
+    { value: "temporary", label: "Temporary" },
+    { value: "freelance", label: "Freelance" },
+    { value: "probation", label: "Probation" },
+    { value: "apprenticeship", label: "Apprenticeship" },
+    { value: "consultant", label: "Consultant" },
+    { value: "volunteer", label: "Volunteer" },
+    { value: "outsourcing", label: "Outsourcing" }
+];
+
+
 export default function CareerPage() {
     const [careers, setCareers] = useState([]);
     const [technologies, setTechnologies] = useState([]);
@@ -206,8 +221,8 @@ export default function CareerPage() {
                 {
                     name: "type",
                     label: "Type",
-                    type: "text",
-                    placeholder: "Enter type",
+                    type: "select",
+                    options: CAREER_TYPES,
                     required: true
                 },
                 {
@@ -319,7 +334,9 @@ export default function CareerPage() {
                                         <tr key={career.id} className="bg-white border-b border-gray-200">
                                             <td className="px-6 py-4 align-top">{(page - 1) * perPage + idx + 1}</td>
                                             <td className="px-6 py-4 align-top">{career.agency_name}</td>
-                                            <td className="px-6 py-4 align-top">{career.type}</td>
+                                            <td className="px-6 py-4 align-top">
+                                                {CAREER_TYPES.find(type => type.value === career.type)?.label || career.type}
+                                            </td>
                                             <td className="px-6 py-4 align-top">{career.position}</td>
                                             <td className="px-6 py-4 align-top">
                                                 {career.image ? (

@@ -42,7 +42,6 @@ export default function DataModal({
         'link', 'align'
     ];
 
-    // Function to convert date to input format (YYYY-MM-DD)
     const formatDateForInput = (dateStr) => {
         if (!dateStr) return "";
         const date = new Date(dateStr);
@@ -52,10 +51,8 @@ export default function DataModal({
 
     useEffect(() => {
         if (isOpen) {
-            // Process initial data and convert dates for input fields
             const processedData = { ...initialData };
 
-            // Convert date fields to proper input format
             fields.forEach(field => {
                 if (field.type === "date" && initialData[field.name]) {
                     processedData[field.name] = formatDateForInput(initialData[field.name]);
@@ -369,6 +366,62 @@ export default function DataModal({
             );
         }
 
+        if (field.type === "select") {
+            const selectedOption = field.options.find(opt => opt.value === formData[field.name]);
+
+            return (
+                <div key={field.name} className="flex flex-col">
+                    <label className="text-sm mb-1 font-medium">{field.label}</label>
+
+                    {isFieldReadOnly ? (
+                        <div className="border border-gray-200 rounded-md px-3 py-2 bg-gray-50 text-gray-700">
+                            {selectedOption?.label || "-"}
+                        </div>
+                    ) : (
+                        <div className="relative">
+                            <button
+                                type="button"
+                                onClick={() => setIsDropdownOpen(field.name)}
+                                className="w-full border border-gray-300 rounded-md px-3 py-2 text-left flex items-center justify-between outline-none hover:border-gray-400 cursor-pointer"
+                            >
+                                <span className={selectedOption ? "text-gray-700" : "text-gray-500"}>
+                                    {selectedOption ? selectedOption.label : `Select ${field.label}`}
+                                </span>
+                                {isDropdownOpen === field.name ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                            </button>
+
+                            {isDropdownOpen === field.name && (
+                                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg p-3">
+                                    <div className="max-h-40 overflow-y-auto">
+                                        {field.options.map((opt) => (
+                                            <button
+                                                key={opt.value}
+                                                type="button"
+                                                onClick={() => {
+                                                    handleChange(field.name, opt.value);
+                                                    setIsDropdownOpen(null);
+                                                }}
+                                                className="w-full px-3 py-2 text-left hover:bg-gray-100 flex items-center gap-2 border-b border-gray-100 last:border-b-0 cursor-pointer"
+                                            >
+                                                {opt.image && (
+                                                    <img
+                                                        src={opt.image}
+                                                        alt={opt.label}
+                                                        className="w-5 h-5 object-cover rounded-full"
+                                                    />
+                                                )}
+                                                <span>{opt.label}</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
         return (
             <div key={field.name} className="flex flex-col">
                 <label className="text-sm mb-1 font-medium">{field.label}</label>
@@ -428,3 +481,9 @@ export default function DataModal({
         </div>
     );
 }
+
+
+
+
+
+
