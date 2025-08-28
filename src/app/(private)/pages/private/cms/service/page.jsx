@@ -160,7 +160,7 @@ export default function ServicesPage() {
                                                             </span>
                                                         );
                                                     })()
-                                                ) : null}
+                                                ) : "No Icon"}
                                             </td>
                                             <td className="px-6 py-4 align-top">{service.title}</td>
                                             <td className="px-6 py-4 align-top max-w-[300px]">

@@ -6,6 +6,7 @@ import { Search } from "lucide-react";
 import Swal from "sweetalert2";
 import { getTechnologies, CreateTechnology, UpdateTechnology, DeleteTechnology } from "@/app/api/technologyApi";
 import Pagination from "@/app/components/molecules/pagination";
+import DataModal from "@/app/components/modals/dataModal";
 
 export default function TechnologyPage() {
     const [technologies, setTechnologies] = useState([]);
@@ -198,127 +199,29 @@ export default function TechnologyPage() {
                 )}
             </div>
 
-            <TechnologyModal
+            <DataModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 title={modalMode === "create" ? "Create Technology" : "Edit Technology"}
+                fields={[
+                    {
+                        name: "name",
+                        label: "Technology Name",
+                        type: "text",
+                        placeholder: "Enter technology name",
+                        required: true
+                    },
+                    {
+                        name: "image",
+                        label: "Technology Image",
+                        type: "file",
+                        accept: "image/*",
+                        required: modalMode === "create"
+                    }
+                ]}
                 onSubmit={handleModalSubmit}
                 initialData={selectedTechnology || {}}
-                mode={modalMode}
             />
-        </div>
-    );
-}
-
-function TechnologyModal({ isOpen, onClose, title, onSubmit, initialData = {}, mode }) {
-    const [formData, setFormData] = useState({
-        name: "",
-        image: null
-    });
-    const [imagePreview, setImagePreview] = useState(null);
-
-    useEffect(() => {
-        if (mode === "edit" && initialData) {
-            setFormData({
-                name: initialData.name || "",
-                image: null
-            });
-            setImagePreview(initialData.image || null);
-        } else {
-            setFormData({ name: "", image: null });
-            setImagePreview(null);
-        }
-    }, [initialData, mode]);
-
-    const handleChange = (name, value) => {
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
-
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setFormData((prev) => ({ ...prev, image: file }));
-
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImagePreview(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const submitData = new FormData();
-            submitData.append('name', formData.name);
-            if (formData.image) {
-                submitData.append('image', formData.image);
-            }
-
-            await onSubmit(submitData);
-            Swal.fire("Success", `${title} success!`, "success");
-            onClose();
-        } catch (err) {
-            Swal.fire("Error", err.response?.data?.error || err.message, "error");
-        }
-    };
-
-    if (!isOpen) return null;
-
-    return (
-        <div className="fixed inset-0 bg-black/30 flex justify-center items-center z-50 px-5">
-            <div className="bg-white rounded-xl p-6 w-full max-w-md">
-                <h2 className="text-xl font-semibold mb-4">{title}</h2>
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                    <div className="flex flex-col">
-                        <label className="text-sm mb-1">Technology Name</label>
-                        <input
-                            type="text"
-                            value={formData.name}
-                            onChange={(e) => handleChange("name", e.target.value)}
-                            className="border border-gray-300 rounded-md px-3 py-2 outline-none"
-                            required
-                        />
-                    </div>
-
-                    <div className="flex flex-col">
-                        <label className="text-sm mb-1">Technology Image</label>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleFileChange}
-                            className="border border-gray-300 rounded-md px-3 py-2 outline-none cursor-pointer"
-                            required={mode === "create"}
-                        />
-                        {imagePreview && (
-                            <div className="mt-2">
-                                <img
-                                    src={imagePreview}
-                                    alt="Preview"
-                                    className="w-20 h-20 object-cover rounded-md border border-gray-200"
-                                />
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="flex justify-end gap-2 mt-2">
-                        <button
-                            type="button"
-                            className="px-4 py-2 rounded-md border border-gray-200 cursor-pointer"
-                            onClick={onClose}
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            className="px-4 py-2 rounded-md bg-black text-white hover:bg-black/80 cursor-pointer"
-                        >
-                            Submit
-                        </button>
-                    </div>
-                </form>
-            </div>
         </div>
     );
 }
