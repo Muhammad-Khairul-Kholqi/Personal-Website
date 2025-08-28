@@ -49,7 +49,7 @@ export default function SidebarCms({ isOpen, onClose, onLogout }) {
             label: "Education",
             submenu: [
                 { label: "Education", href: "/cms/content/pages" },
-                { label: "Certificate", href: "/cms/content/pages" },
+                { label: "Certificate", href: "/pages/private/cms/certificate" },
                 { label: "Technology", href: "/pages/private/cms/technology" },
             ]
         },
