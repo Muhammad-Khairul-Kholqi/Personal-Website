@@ -4,28 +4,13 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Search } from "lucide-react";
 import Swal from "sweetalert2";
-import { GetCareers, CreateCareers, UpdateCareers, DeleteCareers } from "@/app/api/careerApi";
+import { GetProjects, CreateProject, UpdateProject, DeleteProject } from "@/app/api/projectApi";
 import { getTechnologies } from "@/app/api/technologyApi";
 import Pagination from "@/app/components/molecules/pagination";
-import DataModal from "@/app/components/modals/dataModal";
+import DataModal from "@/app/components/modals/dataModal"
 
-const CAREER_TYPES = [
-    { value: "full_time", label: "Full Time" },
-    { value: "part_time", label: "Part Time" },
-    { value: "contract", label: "Contract" },
-    { value: "internship", label: "Internship" },
-    { value: "temporary", label: "Temporary" },
-    { value: "freelance", label: "Freelance" },
-    { value: "probation", label: "Probation" },
-    { value: "apprenticeship", label: "Apprenticeship" },
-    { value: "consultant", label: "Consultant" },
-    { value: "volunteer", label: "Volunteer" },
-    { value: "outsourcing", label: "Outsourcing" }
-];
-
-
-export default function CareerPage() {
-    const [careers, setCareers] = useState([]);
+export default function ProjectPage() {
+    const [projects, setProjects] = useState([]);
     const [technologies, setTechnologies] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
@@ -33,7 +18,7 @@ export default function CareerPage() {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalMode, setModalMode] = useState("create");
-    const [selectedCareer, setSelectedCareer] = useState(null);
+    const [selectedProject, setSelectedProject] = useState(null);
 
     const router = useRouter();
     const pathname = usePathname();
@@ -43,11 +28,11 @@ export default function CareerPage() {
         async function fetchData() {
             setLoading(true);
             try {
-                const [careersData, technologiesData] = await Promise.all([
-                    GetCareers(),
+                const [projectsData, technologiesData] = await Promise.all([
+                    GetProjects(),
                     getTechnologies()
                 ]);
-                setCareers(careersData);
+                setProjects(projectsData);
                 setTechnologies(technologiesData);
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -68,8 +53,8 @@ export default function CareerPage() {
         }
     }, []);
 
-    const filtered = careers.filter((career) =>
-        career.agency_name.toLowerCase().includes(search.toLowerCase())
+    const filtered = projects.filter((project) =>
+        project.title.toLowerCase().includes(search.toLowerCase())
     );
 
     const totalPages = Math.ceil(filtered.length / perPage);
@@ -97,34 +82,34 @@ export default function CareerPage() {
 
     const openCreateModal = () => {
         setModalMode("create");
-        setSelectedCareer(null);
+        setSelectedProject(null);
         setIsModalOpen(true);
     };
 
-    const openEditModal = (career) => {
+    const openEditModal = (project) => {
         setModalMode("edit");
-        setSelectedCareer(career);
+        setSelectedProject(project);
         setIsModalOpen(true);
     };
 
-    const openDetailModal = (career) => {
+    const openDetailModal = (project) => {
         setModalMode("detail");
-        setSelectedCareer(career);
+        setSelectedProject(project);
         setIsModalOpen(true);
     };
 
     const handleModalSubmit = async (formData) => {
         if (modalMode === "create") {
-            await CreateCareers(formData);
+            await CreateProject(formData);
         } else if (modalMode === "edit") {
-            await UpdateCareers(selectedCareer.id, formData);
+            await UpdateProject(selectedProject.id, formData);
         }
 
-        const careersData = await GetCareers();
-        setCareers(careersData);
+        const projectsData = await GetProjects();
+        setProjects(projectsData);
     };
 
-    const handleDelete = async (career) => {
+    const handleDelete = async (project) => {
         const confirm = await Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
@@ -133,55 +118,53 @@ export default function CareerPage() {
             confirmButtonText: "Yes, delete it!",
         });
         if (confirm.isConfirmed) {
-            await DeleteCareers(career.id);
-            setCareers((prev) => prev.filter((t) => t.id !== career.id));
-            Swal.fire("Deleted!", "Your career has been deleted.", "success");
+            await DeleteProject(project.id);
+            setProjects((prev) => prev.filter((t) => t.id !== project.id));
+            Swal.fire("Deleted!", "Your education has been deleted.", "success");
         }
+    };
+
+    const formatDate = (dateStr) => {
+        if (!dateStr) return "-";
+        const date = new Date(dateStr);
+        return date.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+        });
     };
 
     const getModalFields = () => {
         if (modalMode === "detail") {
             return [
                 {
-                    name: "agency_name",
-                    label: "Agency Name",
+                    name: "title",
+                    label: "Title",
                     type: "text",
                     readOnly: true
                 },
                 {
-                    name: "type",
-                    label: "Type",
+                    name: "description",
+                    label: "Description",
                     type: "text",
                     readOnly: true
                 },
                 {
-                    name: "position",
-                    label: "Position",
+                    name: "url_github",
+                    label: "URL GitHub",
                     type: "text",
                     readOnly: true
                 },
                 {
-                    name: "address",
-                    label: "Address",
+                    name: "url_demo",
+                    label: "URL Demo",
                     type: "text",
                     readOnly: true
                 },
                 {
-                    name: "job_list",
+                    name: "list_job",
                     label: "Job List",
                     type: "wysiwyg",
-                    readOnly: true
-                },
-                {
-                    name: "start_time",
-                    label: "Start Time",
-                    type: "date",
-                    readOnly: true
-                },
-                {
-                    name: "end_time",
-                    label: "End Time",
-                    type: "date",
                     readOnly: true
                 },
                 {
@@ -193,7 +176,7 @@ export default function CareerPage() {
                 },
                 {
                     name: "image",
-                    label: "Company Logo",
+                    label: "Image",
                     type: "file",
                     accept: "image/*",
                     readOnly: true
@@ -202,52 +185,38 @@ export default function CareerPage() {
         } else {
             return [
                 {
-                    name: "agency_name",
-                    label: "Agency Name",
+                    name: "title",
+                    label: "Title",
                     type: "text",
-                    placeholder: "Enter agency name",
+                    placeholder: "Enter title",
                     required: true
                 },
                 {
-                    name: "type",
-                    label: "Type",
-                    type: "select",
-                    options: CAREER_TYPES,
-                    required: true
-                },
-                {
-                    name: "position",
-                    label: "Position",
+                    name: "description",
+                    label: "Description",
                     type: "text",
-                    placeholder: "Enter position",
+                    placeholder: "Enter description",
                     required: true
                 },
                 {
-                    name: "address",
-                    label: "Address",
+                    name: "url_github",
+                    label: "URL Github",
                     type: "text",
-                    placeholder: "Enter address",
+                    placeholder: "Enter url github",
                     required: true
                 },
                 {
-                    name: "job_list",
+                    name: "url_demo",
+                    label: "URL Demo",
+                    type: "text",
+                    placeholder: "Enter url demo",
+                    required: true
+                },
+                {
+                    name: "list_job",
                     label: "Job List",
                     type: "wysiwyg",
                     placeholder: "Enter job list",
-                    required: true
-                },
-                {
-                    name: "start_time",
-                    label: "Start Time",
-                    type: "date",
-                    placeholder: "Enter start time",
-                    required: true
-                },
-                {
-                    name: "end_time",
-                    label: "End Time",
-                    type: "date",
-                    placeholder: "Enter end time",
                     required: true
                 },
                 {
@@ -259,7 +228,7 @@ export default function CareerPage() {
                 },
                 {
                     name: "image",
-                    label: "Company Logo",
+                    label: "Project Image",
                     type: "file",
                     accept: "image/*",
                     required: modalMode === "create"
@@ -271,13 +240,13 @@ export default function CareerPage() {
     const getModalTitle = () => {
         switch (modalMode) {
             case "create":
-                return "Create Career";
+                return "Create Project";
             case "edit":
-                return "Edit Career";
+                return "Edit Project";
             case "detail":
-                return "Career Details";
+                return "Project Details";
             default:
-                return "Career";
+                return "Project";
         }
     };
 
@@ -289,7 +258,7 @@ export default function CareerPage() {
                         <Search className="w-5 h-5 text-gray-400" />
                         <input
                             type="text"
-                            placeholder="Search agency name..."
+                            placeholder="Search project..."
                             className="w-full outline-none"
                             value={search}
                             onChange={(e) => handleSearchChange(e.target.value)}
@@ -299,7 +268,7 @@ export default function CareerPage() {
                         className="bg-black hover:bg-black/80 text-white px-5 py-2 rounded-md cursor-pointer transition-colors w-full sm:max-w-[15%]"
                         onClick={openCreateModal}
                     >
-                        Add Career
+                        Add Project
                     </button>
                 </div>
 
@@ -311,28 +280,34 @@ export default function CareerPage() {
                             <thead className="text-sm uppercase bg-gray-100">
                                 <tr>
                                     <th className="px-6 py-3">No</th>
-                                    <th className="px-6 py-3">Agency name</th>
-                                    <th className="px-6 py-3">Type</th>
-                                    <th className="px-6 py-3">Position</th>
-                                    <th className="px-6 py-3">Company Logo</th>
+                                    <th className="px-6 py-3">Title</th>
+                                    <th className="px-6 py-3">URL Github</th>
+                                    <th className="px-6 py-3">URL Demo</th>
+                                    <th className="px-6 py-3">Image</th>
                                     <th className="px-6 py-3">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {paginated.length > 0 ? (
-                                    paginated.map((career, idx) => (
-                                        <tr key={career.id} className="bg-white border-b border-gray-200">
+                                    paginated.map((project, idx) => (
+                                        <tr key={project.id} className="bg-white border-b border-gray-200">
                                             <td className="px-6 py-4 align-top">{(page - 1) * perPage + idx + 1}</td>
-                                            <td className="px-6 py-4 align-top">{career.agency_name}</td>
-                                            <td className="px-6 py-4 align-top">
-                                                {CAREER_TYPES.find(type => type.value === career.type)?.label || career.type}
+                                            <td className="px-6 py-4 align-top">{project.title}</td>
+                                            <td className="px-6 py-4 align-top text-blue-500 hover:underline">
+                                                <a href={project.url_github}>
+                                                    {project.url_github}
+                                                </a>
                                             </td>
-                                            <td className="px-6 py-4 align-top">{career.position}</td>
+                                            <td className="px-6 py-4 align-top text-blue-500 hover:underline">
+                                                <a href={project.url_demo}>
+                                                    {project.url_demo}
+                                                </a>
+                                            </td>
                                             <td className="px-6 py-4 align-top">
-                                                {career.image ? (
+                                                {project.image ? (
                                                     <img
-                                                        src={career.image}
-                                                        alt={career.agency_name}
+                                                        src={project.image}
+                                                        alt={project.title}
                                                         className="w-12 h-12 object-cover rounded-md"
                                                     />
                                                 ) : (
@@ -342,19 +317,19 @@ export default function CareerPage() {
                                             <td className="px-6 py-4 align-top flex items-center gap-3">
                                                 <button
                                                     className="text-blue-400 bg-blue-100 hover:bg-blue-200 hover:text-blue-500 px-3 py-1 rounded-md cursor-pointer"
-                                                    onClick={() => openEditModal(career)}
+                                                    onClick={() => openEditModal(project)}
                                                 >
                                                     Edit
                                                 </button>
                                                 <button
                                                     className="text-green-400 bg-green-100 hover:bg-green-200 hover:text-green-500 px-3 py-1 rounded-md cursor-pointer"
-                                                    onClick={() => openDetailModal(career)}
+                                                    onClick={() => openDetailModal(project)}
                                                 >
                                                     Detail
                                                 </button>
                                                 <button
                                                     className="text-red-400 bg-red-100 hover:bg-red-200 hover:text-red-500 px-3 py-1 rounded-md cursor-pointer"
-                                                    onClick={() => handleDelete(career)}
+                                                    onClick={() => handleDelete(project)}
                                                 >
                                                     Delete
                                                 </button>
@@ -388,7 +363,7 @@ export default function CareerPage() {
                 title={getModalTitle()}
                 fields={getModalFields()}
                 onSubmit={modalMode === "detail" ? undefined : handleModalSubmit}
-                initialData={selectedCareer || {}}
+                initialData={selectedProject || {}}
                 isReadOnly={modalMode === "detail"}
             />
         </div>

@@ -48,7 +48,7 @@ export default function SidebarCms({ isOpen, onClose, onLogout }) {
             icon: GraduationCap,
             label: "Education",
             submenu: [
-                { label: "Education", href: "/cms/content/pages" },
+                { label: "Education", href: "/pages/private/cms/education" },
                 { label: "Certificate", href: "/pages/private/cms/certificate" },
                 { label: "Technology", href: "/pages/private/cms/technology" },
             ]
@@ -58,7 +58,7 @@ export default function SidebarCms({ isOpen, onClose, onLogout }) {
             label: "Content",
             submenu: [
                 { label: "Blogs", href: "/cms/content/pages" },
-                { label: "Projects", href: "/cms/content/pages" },
+                { label: "Projects", href: "/pages/private/cms/projects" },
             ]
         },
     ]
