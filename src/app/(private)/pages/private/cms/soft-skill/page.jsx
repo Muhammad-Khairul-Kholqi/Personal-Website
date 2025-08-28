@@ -1,22 +1,21 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Search } from "lucide-react";
 import Swal from "sweetalert2";
-import { getTechnologies, CreateTechnology, UpdateTechnology, DeleteTechnology } from "@/app/api/technologyApi";
+import { GetSoftSkills, CreateSoftSkill, UpdateSoftSkill, DeleteSoftSkill } from "@/app/api/softSkillApi";
 import Pagination from "@/app/components/molecules/pagination";
 import DataModal from "@/app/components/modals/dataModal";
 
-export default function TechnologyPage() {
-    const [technologies, setTechnologies] = useState([]);
+export default function SoftSkillPage() {    
+    const [softSkills, setSoftSkill] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(1);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalMode, setModalMode] = useState("create");
-    const [selectedTechnology, setSelectedTechnology] = useState(null);
+    const [modalMode, setModalMode] = useState("create"); 
+    const [selectedSoftSkill, setSelectedSoftSkill] = useState(null);
 
     const router = useRouter();
     const pathname = usePathname();
@@ -25,8 +24,8 @@ export default function TechnologyPage() {
     useEffect(() => {
         async function fetchData() {
             setLoading(true);
-            const data = await getTechnologies();
-            setTechnologies(data);
+            const data = await GetSoftSkills();
+            setSoftSkill(data);
             setLoading(false);
         }
         fetchData();
@@ -35,15 +34,13 @@ export default function TechnologyPage() {
     useEffect(() => {
         if (typeof window !== "undefined") {
             const params = new URLSearchParams(window.location.search);
-            const currentPage = parseInt(params.get("page") || "1", 10);
-            const currentSearch = params.get("search") || "";
-            setPage(currentPage);
-            setSearch(currentSearch);
+            setPage(parseInt(params.get("page") || "1", 10));
+            setSearch(params.get("search") || "");
         }
     }, []);
 
-    const filtered = technologies.filter((tech) =>
-        tech.name.toLowerCase().includes(search.toLowerCase())
+    const filtered = softSkills.filter((softSkill) =>
+        softSkill.title.toLowerCase().includes(search.toLowerCase())
     );
 
     const totalPages = Math.ceil(filtered.length / perPage);
@@ -71,29 +68,29 @@ export default function TechnologyPage() {
 
     const openCreateModal = () => {
         setModalMode("create");
-        setSelectedTechnology(null);
+        setSelectedSoftSkill(null);
         setIsModalOpen(true);
     };
 
-    const openEditModal = (technology) => {
+    const openEditModal = (softSkill) => {
         setModalMode("edit");
-        setSelectedTechnology(technology);
+        setSelectedSoftSkill(softSkill);
         setIsModalOpen(true);
     };
 
     const handleModalSubmit = async (formData) => {
         if (modalMode === "create") {
-            const newTechnology = await CreateTechnology(formData);
-            setTechnologies((prev) => [newTechnology, ...prev]);
+            const newSoftSkill = await CreateSoftSkill(formData);
+            setSoftSkill((prev) => [newSoftSkill, ...prev]);
         } else if (modalMode === "edit") {
-            const updatedTechnology = await UpdateTechnology(selectedTechnology.id, formData);
-            setTechnologies((prev) =>
-                prev.map((t) => (t.id === selectedTechnology.id ? updatedTechnology : t))
+            const updatedSoftSkill = await UpdateSoftSkill(selectedSoftSkill.id, formData);
+            setSoftSkill((prev) =>
+                prev.map((s) => (s.id === selectedSoftSkill.id ? updatedSoftSkill : s))
             );
         }
     };
 
-    const handleDelete = async (technology) => {
+    const handleDelete = async (softSkill) => {
         const confirm = await Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
@@ -102,9 +99,9 @@ export default function TechnologyPage() {
             confirmButtonText: "Yes, delete it!",
         });
         if (confirm.isConfirmed) {
-            await DeleteTechnology(technology.id);
-            setTechnologies((prev) => prev.filter((t) => t.id !== technology.id));
-            Swal.fire("Deleted!", "Your technology has been deleted.", "success");
+            await DeleteSoftSkill(softSkill.id);
+            setSoftSkill((prev) => prev.filter((s) => s.id !== softSkill.id));
+            Swal.fire("Deleted!", "Your soft skill has been deleted.", "success");
         }
     };
 
@@ -116,7 +113,7 @@ export default function TechnologyPage() {
                         <Search className="w-5 h-5 text-gray-400" />
                         <input
                             type="text"
-                            placeholder="Search technology..."
+                            placeholder="Search soft skill..."
                             className="w-full outline-none"
                             value={search}
                             onChange={(e) => handleSearchChange(e.target.value)}
@@ -126,7 +123,7 @@ export default function TechnologyPage() {
                         className="bg-black hover:bg-black/80 text-white px-5 py-2 rounded-md cursor-pointer transition-colors w-full sm:max-w-[15%]"
                         onClick={openCreateModal}
                     >
-                        Add Technology
+                        Add Soft Skill
                     </button>
                 </div>
 
@@ -138,38 +135,30 @@ export default function TechnologyPage() {
                             <thead className="text-sm uppercase bg-gray-100">
                                 <tr>
                                     <th className="px-6 py-3">No</th>
-                                    <th className="px-6 py-3">Technology Name</th>
-                                    <th className="px-6 py-3">Image</th>
+                                    <th className="px-6 py-3">Title</th>
+                                    <th className="px-6 py-3">Description</th>
                                     <th className="px-6 py-3">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {paginated.length > 0 ? (
-                                    paginated.map((tech, idx) => (
-                                        <tr key={tech.id} className="bg-white border-b border-gray-200">
-                                            <td className="px-6 py-4">{(page - 1) * perPage + idx + 1}</td>
-                                            <td className="px-6 py-4">{tech.name}</td>
-                                            <td className="px-6 py-4">
-                                                {tech.image ? (
-                                                    <img
-                                                        src={tech.image}
-                                                        alt={tech.name}
-                                                        className="w-12 h-12 object-cover rounded-md"
-                                                    />
-                                                ) : (
-                                                    "-"
-                                                )}
+                                    paginated.map((softSkill, idx) => (
+                                        <tr key={softSkill.id} className="bg-white border-b border-gray-200">
+                                            <td className="px-6 py-4 align-top">{(page - 1) * perPage + idx + 1}</td>
+                                            <td className="px-6 py-4 align-top">{softSkill.title}</td>
+                                            <td className="px-6 py-4 align-top max-w-[300px]">
+                                                <div className="max-h-[120px] overflow-y-auto pr-2 scroll-thin">{softSkill.description}</div>
                                             </td>
-                                            <td className="px-6 py-4 flex items-center gap-3">
+                                            <td className="px-6 py-4 align-top flex items-center gap-3">
                                                 <button
                                                     className="text-blue-400 bg-blue-100 hover:bg-blue-200 hover:text-blue-500 px-3 py-1 rounded-md cursor-pointer"
-                                                    onClick={() => openEditModal(tech)}
+                                                    onClick={() => openEditModal(softSkill)}
                                                 >
                                                     Edit
                                                 </button>
                                                 <button
                                                     className="text-red-400 bg-red-100 hover:bg-red-200 hover:text-red-500 px-3 py-1 rounded-md cursor-pointer"
-                                                    onClick={() => handleDelete(tech)}
+                                                    onClick={() => handleDelete(softSkill)}
                                                 >
                                                     Delete
                                                 </button>
@@ -178,7 +167,7 @@ export default function TechnologyPage() {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="4" className="text-center py-5 text-gray-500">
+                                        <td colSpan="5" className="text-center py-5 text-gray-500">
                                             No data found
                                         </td>
                                     </tr>
@@ -189,37 +178,22 @@ export default function TechnologyPage() {
                 </div>
 
                 {!loading && (
-                    <Pagination
-                        page={page}
-                        totalPages={totalPages}
-                        onPageChange={handlePageChange}
-                    />
+                    <Pagination page={page} totalPages={totalPages} onPageChange={handlePageChange} />
                 )}
             </div>
 
             <DataModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                title={modalMode === "create" ? "Create Technology" : "Edit Technology"}
+                title={modalMode === "create" ? "Create Soft Skill" : "Edit Soft Skill"}
                 fields={[
-                    {
-                        name: "name",
-                        label: "Technology Name",
-                        type: "text",
-                        placeholder: "Enter technology name",
-                        required: true
-                    },
-                    {
-                        name: "image",
-                        label: "Technology Image",
-                        type: "file",
-                        accept: "image/*",
-                        required: modalMode === "create"
-                    }
+                    { name: "title", label: "Title", required: true },
+                    { name: "description", label: "Description", required: true },
                 ]}
                 onSubmit={handleModalSubmit}
-                initialData={selectedTechnology || {}}
+                initialData={selectedSoftSkill || {}}
             />
         </div>
     );
 }
+

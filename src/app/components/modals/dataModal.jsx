@@ -42,9 +42,27 @@ export default function DataModal({
         'link', 'align'
     ];
 
+    // Function to convert date to input format (YYYY-MM-DD)
+    const formatDateForInput = (dateStr) => {
+        if (!dateStr) return "";
+        const date = new Date(dateStr);
+        if (isNaN(date.getTime())) return "";
+        return date.toISOString().split('T')[0];
+    };
+
     useEffect(() => {
         if (isOpen) {
-            setFormData(initialData);
+            // Process initial data and convert dates for input fields
+            const processedData = { ...initialData };
+
+            // Convert date fields to proper input format
+            fields.forEach(field => {
+                if (field.type === "date" && initialData[field.name]) {
+                    processedData[field.name] = formatDateForInput(initialData[field.name]);
+                }
+            });
+
+            setFormData(processedData);
             setFileData({});
 
             const newPreviews = {};

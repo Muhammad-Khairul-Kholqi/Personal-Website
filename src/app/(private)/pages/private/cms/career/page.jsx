@@ -284,7 +284,7 @@ export default function CareerPage() {
                         <Search className="w-5 h-5 text-gray-400" />
                         <input
                             type="text"
-                            placeholder="Search company..."
+                            placeholder="Search agency name..."
                             className="w-full outline-none"
                             value={search}
                             onChange={(e) => handleSearchChange(e.target.value)}
@@ -309,7 +309,7 @@ export default function CareerPage() {
                                     <th className="px-6 py-3">Agency name</th>
                                     <th className="px-6 py-3">Type</th>
                                     <th className="px-6 py-3">Position</th>
-                                    <th className="px-6 py-3">Image</th>
+                                    <th className="px-6 py-3">Company Logo</th>
                                     <th className="px-6 py-3">Action</th>
                                 </tr>
                             </thead>
