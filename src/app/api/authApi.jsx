@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_API_LINK;
 
 export const LoginUser = async (email, password) => {
@@ -34,3 +36,98 @@ export const VerifyToken = async (token) => {
         return { ok: false, data: null };
     }
 };
+
+export async function GetDataUser() {
+    try {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            throw new Error('No authentication token found');
+        }
+
+        const res = await axios.get(`${BASE_URL}/api/auth/profile`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+        });
+
+        return res.data;
+    } catch (error) {
+        console.error("Failed to fetch user data:", error);
+        if (error.response?.status === 401) {
+            // Token expired atau invalid
+            localStorage.removeItem("token");
+            throw new Error('Authentication failed. Please login again.');
+        }
+        throw error;
+    }
+}
+
+// Function untuk update profile data
+export async function UpdateUserProfile(profileData) {
+    try {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            throw new Error('No authentication token found');
+        }
+
+        // Jika ada file image, gunakan FormData
+        let requestData;
+        let headers = {
+            Authorization: `Bearer ${token}`
+        };
+
+        if (profileData instanceof FormData) {
+            requestData = profileData;
+            // Jangan set Content-Type untuk FormData, biarkan browser yang set
+        } else {
+            requestData = profileData;
+            headers['Content-Type'] = 'application/json';
+        }
+
+        const res = await axios.put(`${BASE_URL}/api/auth/profile`, requestData, {
+            headers
+        });
+
+        return res.data;
+    } catch (error) {
+        console.error("Failed to update profile:", error);
+        if (error.response?.status === 401) {
+            localStorage.removeItem("token");
+            throw new Error('Authentication failed. Please login again.');
+        }
+        throw error;
+    }
+}
+
+// Function untuk update password
+export async function UpdateUserPassword(passwordData) {
+    try {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            throw new Error('No authentication token found');
+        }
+
+        const res = await axios.put(`${BASE_URL}/api/auth/change-password`, passwordData, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        return res.data;
+    } catch (error) {
+        console.error("Failed to change password:", error);
+        if (error.response?.status === 401) {
+            if (error.response?.data?.error === 'Current password is incorrect') {
+                throw new Error('Current password is incorrect');
+            }
+            localStorage.removeItem("token");
+            throw new Error('Authentication failed. Please login again.');
+        }
+        throw error;
+    }
+}
