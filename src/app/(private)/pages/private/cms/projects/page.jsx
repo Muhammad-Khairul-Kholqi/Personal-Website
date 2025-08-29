@@ -9,6 +9,11 @@ import { GetTechnologies } from "@/app/api/technologyApi";
 import Pagination from "@/app/components/molecules/pagination";
 import DataModal from "@/app/components/modals/dataModal"
 
+const PROJECT_STATUS = [    
+    { value: "processed", label: "Processed" },
+    { value: "finished", label: "Finished" },
+];
+
 export default function ProjectPage() {
     const [projects, setProjects] = useState([]);
     const [technologies, setTechnologies] = useState([]);
@@ -134,12 +139,6 @@ export default function ProjectPage() {
                     readOnly: true
                 },
                 {
-                    name: "description",
-                    label: "Description",
-                    type: "text",
-                    readOnly: true
-                },
-                {
                     name: "url_github",
                     label: "URL GitHub",
                     type: "text",
@@ -148,6 +147,18 @@ export default function ProjectPage() {
                 {
                     name: "url_demo",
                     label: "URL Demo",
+                    type: "text",
+                    readOnly: true
+                },
+                {
+                    name: "status",
+                    label: "Status",
+                    type: "text",
+                    readOnly: true
+                },
+                {
+                    name: "description",
+                    label: "Description",
                     type: "text",
                     readOnly: true
                 },
@@ -182,24 +193,31 @@ export default function ProjectPage() {
                     required: true
                 },
                 {
-                    name: "description",
-                    label: "Description",
-                    type: "text",
-                    placeholder: "Enter description",
-                    required: true
-                },
-                {
                     name: "url_github",
                     label: "URL Github",
                     type: "text",
                     placeholder: "Enter url github",
-                    required: true
+                    required: false
                 },
                 {
                     name: "url_demo",
                     label: "URL Demo",
                     type: "text",
                     placeholder: "Enter url demo",
+                    required: false
+                },
+                {
+                    name: "status",
+                    label: "Status",
+                    type: "select",
+                    options: PROJECT_STATUS,
+                    required: true
+                },
+                {
+                    name: "description",
+                    label: "Description",
+                    type: "textarea",
+                    placeholder: "Enter description",
                     required: true
                 },
                 {
@@ -273,6 +291,7 @@ export default function ProjectPage() {
                                     <th className="px-6 py-3">Title</th>
                                     <th className="px-6 py-3">URL Github</th>
                                     <th className="px-6 py-3">URL Demo</th>
+                                    <th className="px-6 py-3">Status</th>
                                     <th className="px-6 py-3">Image</th>
                                     <th className="px-6 py-3">Action</th>
                                 </tr>
@@ -283,15 +302,26 @@ export default function ProjectPage() {
                                         <tr key={project.id} className="bg-white border-b border-gray-200">
                                             <td className="px-6 py-4 align-top">{(page - 1) * perPage + idx + 1}</td>
                                             <td className="px-6 py-4 align-top">{project.title}</td>
-                                            <td className="px-6 py-4 align-top text-blue-500 hover:underline">
-                                                <a href={project.url_github}>
-                                                    {project.url_github}
-                                                </a>
+                                            <td className="px-6 py-4 align-top">
+                                                {project.url_github ? (
+                                                    <a href={project.url_github} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                                                        {project.url_github}
+                                                    </a>
+                                                ) : (
+                                                    <span>No URL Github available</span>
+                                                )}
                                             </td>
-                                            <td className="px-6 py-4 align-top text-blue-500 hover:underline">
-                                                <a href={project.url_demo}>
-                                                    {project.url_demo}
-                                                </a>
+                                            <td className="px-6 py-4 align-top">
+                                                {project.url_demo ? (
+                                                    <a href={project.url_demo} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                                                        {project.url_demo}
+                                                    </a>
+                                                ) : (
+                                                    <span>No URL Demo available</span>
+                                                )}
+                                            </td>
+                                            <td className="px-6 py-4 align-top">
+                                                {PROJECT_STATUS.find(status => status.value === project.status)?.label || project.status}
                                             </td>
                                             <td className="px-6 py-4 align-top">
                                                 {project.image ? (

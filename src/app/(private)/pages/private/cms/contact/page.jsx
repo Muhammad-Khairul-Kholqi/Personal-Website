@@ -164,8 +164,10 @@ export default function ContactsPage() {
                                             </td>
                                             <td className="px-6 py-4 align-top">{contact.title}</td>
                                             <td className="px-6 py-4 align-top">{contact.username}</td>
-                                            <td className="px-6 py-4 align-top max-w-[300px]">
-                                                <div className="max-h-[120px] overflow-y-auto pr-2 scroll-thin">{contact.link}</div>
+                                            <td className="px-6 py-4 align-top text-blue-500 hover:underline">
+                                                <a href={contact.link}>
+                                                    {contact.link}
+                                                </a>
                                             </td>
                                             <td className="px-6 py-4 align-top flex items-center gap-3">
                                                 <button
