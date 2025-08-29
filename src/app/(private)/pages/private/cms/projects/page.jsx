@@ -291,7 +291,6 @@ export default function ProjectPage() {
                                     <th className="px-6 py-3">Title</th>
                                     <th className="px-6 py-3">URL Github</th>
                                     <th className="px-6 py-3">URL Demo</th>
-                                    <th className="px-6 py-3">Status</th>
                                     <th className="px-6 py-3">Image</th>
                                     <th className="px-6 py-3">Action</th>
                                 </tr>
@@ -319,9 +318,6 @@ export default function ProjectPage() {
                                                 ) : (
                                                     <span>No URL Demo available</span>
                                                 )}
-                                            </td>
-                                            <td className="px-6 py-4 align-top">
-                                                {PROJECT_STATUS.find(status => status.value === project.status)?.label || project.status}
                                             </td>
                                             <td className="px-6 py-4 align-top">
                                                 {project.image ? (

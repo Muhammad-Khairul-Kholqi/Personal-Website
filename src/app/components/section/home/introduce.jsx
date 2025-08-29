@@ -1,15 +1,30 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { Download } from 'lucide-react';
+import { GetDataUser } from "@/app/api/authApi"
+import LoadingSkeleton from "@/app/components/global/loadingSkeleton";
 
 export default function Introduction() {
+    const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
+    const [isVisible, setIsVisible] = useState(true);
+    const showLoading = loading;
+
+    useEffect(() => {
+        async function fetchData() {
+            setLoading(true);
+            const data = await GetDataUser();
+            setUsers(data);
+            setLoading(false);
+        }
+        fetchData();
+    }, []);
+    
     const roles = [
         'Fullstack Developer',
         'UI / UX Designer',
     ];
-
-    const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
-    const [isVisible, setIsVisible] = useState(true);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -29,14 +44,24 @@ export default function Introduction() {
     return (
         <div>
             <div className="flex gap-[5px] items-center mb-4">
-                <h1 className="text-3xl font-sora">Hi, I'm Khairul</h1>
+                <h1 className="text-3xl font-sora">
+                    {showLoading ? (
+                        <LoadingSkeleton width="300px" height="30px" />
+                    ) : (
+                        <h3>Hi, I'm {users?.fullname}</h3>
+                    )}
+                </h1>
                 <h1 className="shake-animation text-3xl">👋</h1>
             </div>
 
             <div className="mb-4 flex flex-wrap items-center gap-5">
                 <div className="flex items-center gap-2">
                     <div className="p-0.5 bg-black rounded-full" />
-                    <h3>Sukabumi Regency, West Java</h3>
+                    {showLoading ? (
+                         <LoadingSkeleton width="170px" height="24px" />
+                    ) : (
+                        <h3>{users?.address}</h3>
+                    )}
                 </div>
                 <div className="flex items-center gap-2">
                     <div className="p-0.5 bg-black rounded-full" />
@@ -51,9 +76,19 @@ export default function Introduction() {
                 </div>
             </div>
 
-            <p className="leading-relaxed tracking-wide text-justify mb-5">
-                Seasoned Software Engineer especially in Frontend side, with a passion for creating pixel-perfect web experiences. I work with JavaScript and specialize in all-things web. I thrive on collaborating with teams to deliver efficient, scalable, and visually appealing web applications.
-            </p>
+            <div className="leading-relaxed tracking-wide text-justify mb-5">
+                <div className="leading-relaxed tracking-wide text-justify mb-5">
+                    {showLoading ? (
+                        <div className="flex flex-col gap-2 mb-5">
+                            <LoadingSkeleton width="100%" height="20px" />
+                            <LoadingSkeleton width="90%" height="20px" />
+                            <LoadingSkeleton width="80%" height="20px" />
+                        </div>
+                    ) : (
+                        <p>{users?.description}</p>
+                    )}
+                </div>
+            </div>
 
             <div className="flex items-center gap-5">
                 <a href="https://drive.google.com/uc?export=view&id=19omqGDfS5JJOuaDmn329nkZHFo4Ww6vg" download className='flex items-center gap-2'>
