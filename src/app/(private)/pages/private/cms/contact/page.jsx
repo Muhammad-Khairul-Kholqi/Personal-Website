@@ -140,6 +140,7 @@ export default function ContactsPage() {
                                     <th className="px-6 py-3">No</th>
                                     <th className="px-6 py-3">Icon</th>
                                     <th className="px-6 py-3">Title</th>
+                                    <th className="px-6 py-3">Username</th>
                                     <th className="px-6 py-3">Link</th>
                                     <th className="px-6 py-3">Action</th>
                                 </tr>
@@ -162,6 +163,7 @@ export default function ContactsPage() {
                                                 ) : "No icon"}
                                             </td>
                                             <td className="px-6 py-4 align-top">{contact.title}</td>
+                                            <td className="px-6 py-4 align-top">{contact.username}</td>
                                             <td className="px-6 py-4 align-top max-w-[300px]">
                                                 <div className="max-h-[120px] overflow-y-auto pr-2 scroll-thin">{contact.link}</div>
                                             </td>
@@ -204,6 +206,7 @@ export default function ContactsPage() {
                 title={modalMode === "create" ? "Create Contact" : "Edit Contact"}
                 fields={[
                     { name: "title", label: "Title", required: true },
+                    { name: "username", label: "Username", required: true },
                     { name: "link", label: "Link", required: true },
                     { name: "icon", label: "Icon", required: true },
                 ]}
