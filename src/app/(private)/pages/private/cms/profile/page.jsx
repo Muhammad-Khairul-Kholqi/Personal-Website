@@ -10,7 +10,6 @@ export default function ProfilePage() {
     const [error, setError] = useState(null);
     const [activeTab, setActiveTab] = useState('my-data');
 
-    // Form states untuk edit data
     const [editFormData, setEditFormData] = useState({
         fullname: '',
         username: '',
@@ -21,7 +20,6 @@ export default function ProfilePage() {
     });
     const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
 
-    // Form states untuk edit password
     const [passwordFormData, setPasswordFormData] = useState({
         currentPassword: '',
         newPassword: '',
@@ -38,10 +36,8 @@ export default function ProfilePage() {
                 setError(null);
                 const data = await GetDataUser();
 
-                // Perbaikan: set profile sebagai object tunggal, bukan array
                 setProfile(data);
 
-                // Set form data untuk edit
                 setEditFormData({
                     fullname: data.fullname || '',
                     username: data.username || '',
@@ -56,7 +52,6 @@ export default function ProfilePage() {
                 setError(err.message || 'Failed to load user data');
                 setProfile(null);
 
-                // Show error alert
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
@@ -87,7 +82,6 @@ export default function ProfilePage() {
         setActiveTab(tabName);
     };
 
-    // Handle form input changes untuk edit profile
     const handleEditFormChange = (e) => {
         const { name, value } = e.target;
         setEditFormData(prev => ({
@@ -96,7 +90,6 @@ export default function ProfilePage() {
         }));
     };
 
-    // Handle file input change
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         setEditFormData(prev => ({
@@ -105,19 +98,18 @@ export default function ProfilePage() {
         }));
     };
 
-    // Handle submit update profile
     const handleUpdateProfile = async (e) => {
         e.preventDefault();
 
         try {
             setIsUpdatingProfile(true);
 
-            // Create FormData untuk handle file upload
             const formData = new FormData();
             formData.append('fullname', editFormData.fullname);
             formData.append('username', editFormData.username);
             formData.append('address', editFormData.address);
             formData.append('description', editFormData.description);
+            formData.append('email', editFormData.email);
 
             if (editFormData.image) {
                 formData.append('image', editFormData.image);
@@ -125,10 +117,8 @@ export default function ProfilePage() {
 
             const updatedData = await UpdateUserProfile(formData);
 
-            // Update profile state dengan data terbaru
             setProfile(updatedData);
 
-            // Reset file input
             if (fileInputRef.current) {
                 fileInputRef.current.value = '';
             }
@@ -137,7 +127,6 @@ export default function ProfilePage() {
                 image: null
             }));
 
-            // Show success alert
             Swal.fire({
                 icon: 'success',
                 title: 'Success',
@@ -146,7 +135,6 @@ export default function ProfilePage() {
                 showConfirmButton: false
             });
 
-            // Switch back to my-data tab
             setActiveTab('my-data');
 
         } catch (err) {
@@ -161,7 +149,6 @@ export default function ProfilePage() {
         }
     };
 
-    // Handle form input changes untuk password
     const handlePasswordFormChange = (e) => {
         const { name, value } = e.target;
         setPasswordFormData(prev => ({
@@ -170,11 +157,9 @@ export default function ProfilePage() {
         }));
     };
 
-    // Handle submit update password
     const handleUpdatePassword = async (e) => {
         e.preventDefault();
 
-        // Validasi form
         if (!passwordFormData.currentPassword) {
             Swal.fire({
                 icon: 'warning',
@@ -219,14 +204,12 @@ export default function ProfilePage() {
                 newPassword: passwordFormData.newPassword
             });
 
-            // Reset form
             setPasswordFormData({
                 currentPassword: '',
                 newPassword: '',
                 confirmPassword: ''
             });
 
-            // Show success alert
             Swal.fire({
                 icon: 'success',
                 title: 'Success',
@@ -235,7 +218,6 @@ export default function ProfilePage() {
                 showConfirmButton: false
             });
 
-            // Switch back to my-data tab
             setActiveTab('my-data');
 
         } catch (err) {
@@ -285,7 +267,7 @@ export default function ProfilePage() {
 
                                     <div className="bg-white p-4 rounded-lg border border-gray-200">
                                         <label className="text-sm text-gray-600">Username:</label>
-                                        <p className="font-medium">{profile.username || 'N/A'}</p>
+                                        <p className="font-medium">@{profile.username || 'N/A'}</p>
                                     </div>
 
                                     <div className="bg-white p-4 rounded-lg border border-gray-200">
@@ -315,8 +297,8 @@ export default function ProfilePage() {
                     <div>
                         <h3 className="text-lg font-semibold mb-4">Edit Profile Data</h3>
 
-                        <form onSubmit={handleUpdateProfile} className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <form onSubmit={handleUpdateProfile}>
+                            <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 items-start gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                         Full Name
@@ -326,7 +308,7 @@ export default function ProfilePage() {
                                         name="fullname"
                                         value={editFormData.fullname}
                                         onChange={handleEditFormChange}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none"
                                         placeholder="Enter your full name"
                                     />
                                 </div>
@@ -340,12 +322,12 @@ export default function ProfilePage() {
                                         name="username"
                                         value={editFormData.username}
                                         onChange={handleEditFormChange}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none"
                                         placeholder="Enter your username"
                                     />
                                 </div>
 
-                                <div className="md:col-span-2">
+                                <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                         Email
                                     </label>
@@ -354,14 +336,12 @@ export default function ProfilePage() {
                                         name="email"
                                         value={editFormData.email}
                                         onChange={handleEditFormChange}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none"
                                         placeholder="Enter your email"
-                                        disabled
                                     />
-                                    <p className="text-xs text-gray-500 mt-1">Email cannot be changed</p>
                                 </div>
 
-                                <div className="md:col-span-2">
+                                <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                         Address
                                     </label>
@@ -370,7 +350,7 @@ export default function ProfilePage() {
                                         name="address"
                                         value={editFormData.address}
                                         onChange={handleEditFormChange}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none"
                                         placeholder="Enter your address"
                                     />
                                 </div>
@@ -384,38 +364,38 @@ export default function ProfilePage() {
                                         type="file"
                                         accept="image/*"
                                         onChange={handleFileChange}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none cursor-pointer"
                                     />
                                     <p className="text-xs text-gray-500 mt-1">Max file size: 5MB</p>
                                 </div>
-                            </div>
 
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Description
-                                </label>
-                                <textarea
-                                    name="description"
-                                    value={editFormData.description}
-                                    onChange={handleEditFormChange}
-                                    rows="4"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    placeholder="Tell us about yourself"
-                                />
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Description
+                                    </label>
+                                    <textarea
+                                        name="description"
+                                        value={editFormData.description}
+                                        onChange={handleEditFormChange}
+                                        rows="4"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none"
+                                        placeholder="Tell us about yourself"
+                                    />
+                                </div>
                             </div>
-
-                            <div className="flex gap-3 pt-4">
+                            
+                            <div className="flex gap-3 mt-5">
                                 <button
                                     type="submit"
                                     disabled={isUpdatingProfile}
-                                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-medium transition-colors disabled:bg-gray-400"
+                                    className="bg-black hover:bg-black/80 text-white px-6 py-2 rounded-md font-medium transition-colors disabled:bg-gray-400 cursor-pointer"
                                 >
                                     {isUpdatingProfile ? 'Updating...' : 'Update Profile'}
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setActiveTab('my-data')}
-                                    className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-md font-medium transition-colors"
+                                    className="bg-white border border-gray-200 hover:bg-gray-100 text-black px-6 py-2 rounded-md font-medium transition-colors cursor-pointer"
                                 >
                                     Cancel
                                 </button>
@@ -429,63 +409,66 @@ export default function ProfilePage() {
                     <div>
                         <h3 className="text-lg font-semibold mb-4">Change Password</h3>
 
-                        <form onSubmit={handleUpdatePassword} className="space-y-4 max-w-md">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Current Password
-                                </label>
-                                <input
-                                    type="password"
-                                    name="currentPassword"
-                                    value={passwordFormData.currentPassword}
-                                    onChange={handlePasswordFormChange}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    placeholder="Enter your current password"
-                                    required
-                                />
-                            </div>
+                        <form onSubmit={handleUpdatePassword}>
 
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    New Password
-                                </label>
-                                <input
-                                    type="password"
-                                    name="newPassword"
-                                    value={passwordFormData.newPassword}
-                                    onChange={handlePasswordFormChange}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    placeholder="Enter new password (min 6 characters)"
-                                    required
-                                    minLength="6"
-                                />
-                            </div>
+                            <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 items-start gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Current Password
+                                    </label>
+                                    <input
+                                        type="password"
+                                        name="currentPassword"
+                                        value={passwordFormData.currentPassword}
+                                        onChange={handlePasswordFormChange}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none"
+                                        placeholder="Enter your current password"
+                                        required
+                                    />
+                                </div>
 
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Confirm New Password
-                                </label>
-                                <input
-                                    type="password"
-                                    name="confirmPassword"
-                                    value={passwordFormData.confirmPassword}
-                                    onChange={handlePasswordFormChange}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    placeholder="Confirm your new password"
-                                    required
-                                />
-                            </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        New Password
+                                    </label>
+                                    <input
+                                        type="password"
+                                        name="newPassword"
+                                        value={passwordFormData.newPassword}
+                                        onChange={handlePasswordFormChange}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none"
+                                        placeholder="Enter new password (min 6 characters)"
+                                        required
+                                        minLength="6"
+                                    />
+                                </div>
 
-                            {passwordFormData.newPassword && passwordFormData.confirmPassword &&
-                                passwordFormData.newPassword !== passwordFormData.confirmPassword && (
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Confirm New Password
+                                    </label>
+                                    <input
+                                        type="password"
+                                        name="confirmPassword"
+                                        value={passwordFormData.confirmPassword}
+                                        onChange={handlePasswordFormChange}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none"
+                                        placeholder="Confirm your new password"
+                                        required
+                                    />
+                                </div>
+
+                                {passwordFormData.newPassword && passwordFormData.confirmPassword && passwordFormData.newPassword !== passwordFormData.confirmPassword && (
                                     <p className="text-red-600 text-sm">Passwords do not match</p>
                                 )}
+                            </div>
+                            
 
-                            <div className="flex gap-3 pt-4">
+                            <div className="flex gap-3 mt-4">
                                 <button
                                     type="submit"
                                     disabled={isUpdatingPassword || passwordFormData.newPassword !== passwordFormData.confirmPassword}
-                                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-medium transition-colors disabled:bg-gray-400"
+                                    className="bg-black hover:bg-black/80 text-white px-6 py-2 rounded-md font-medium transition-colors disabled:bg-gray-400 cursor-pointer"
                                 >
                                     {isUpdatingPassword ? 'Changing...' : 'Change Password'}
                                 </button>
@@ -499,7 +482,7 @@ export default function ProfilePage() {
                                         });
                                         setActiveTab('my-data');
                                     }}
-                                    className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-md font-medium transition-colors"
+                                    className="bg-white border border-gray-200 hover:bg-gray-100 text-black px-6 py-2 rounded-md font-medium transition-colors cursor-pointer"
                                 >
                                     Cancel
                                 </button>
@@ -515,20 +498,20 @@ export default function ProfilePage() {
 
     return (
         <div className="">
-            <div className="flex items-center gap-5 mb-6">
-                <div className="w-20 h-20 rounded-full bg-gray-200 shadow-md overflow-hidden">
+            <div className="flex flex-col sm:flex-col md:flex-row items-center gap-5 mb-6">
+                <div className="w-24 h-24 rounded-full bg-gray-200 overflow-hidden">
                     <img
                         src={profile?.image}
                         alt="Profile"
                         className="rounded-full object-cover w-full h-full"
                     />
                 </div>
-                <div>
+                <div className="text-center sm:text-center md:text-left mt-3 md:mt-0">
                     <h2 className="text-2xl font-bold tracking-wide">
-                        {!loading && profile ? profile.fullname : 'Loading...'}
+                        {!loading && profile ? profile.fullname : 'Full Name'}
                     </h2>
                     <p className="text-gray-700">
-                        {!loading && profile ? profile.email : 'Loading...'}
+                        @{!loading && profile ? profile.username : 'Username'}
                     </p>
                 </div>
             </div>
