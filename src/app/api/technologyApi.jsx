@@ -2,7 +2,7 @@ import axios from "axios";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_API_LINK;
 
-export async function getTechnologies() {
+export async function GetTechnologies() {
     try {
         const res = await axios.get(`${BASE_URL}/api/technology`);
         return res.data; 

@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { Search } from "lucide-react";
 import Swal from "sweetalert2";
 import { GetCareers, CreateCareers, UpdateCareers, DeleteCareers } from "@/app/api/careerApi";
-import { getTechnologies } from "@/app/api/technologyApi";
+import { GetTechnologies } from "@/app/api/technologyApi";
 import Pagination from "@/app/components/molecules/pagination";
 import DataModal from "@/app/components/modals/dataModal";
 
@@ -45,7 +45,7 @@ export default function CareerPage() {
             try {
                 const [careersData, technologiesData] = await Promise.all([
                     GetCareers(),
-                    getTechnologies()
+                    GetTechnologies()
                 ]);
                 setCareers(careersData);
                 setTechnologies(technologiesData);

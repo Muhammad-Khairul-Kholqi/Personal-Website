@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Search } from "lucide-react";
 import Swal from "sweetalert2";
-import { getTechnologies, CreateTechnology, UpdateTechnology, DeleteTechnology } from "@/app/api/technologyApi";
+import { GetTechnologies, CreateTechnology, UpdateTechnology, DeleteTechnology } from "@/app/api/technologyApi";
 import Pagination from "@/app/components/molecules/pagination";
 import DataModal from "@/app/components/modals/dataModal";
 
@@ -25,7 +25,7 @@ export default function TechnologyPage() {
     useEffect(() => {
         async function fetchData() {
             setLoading(true);
-            const data = await getTechnologies();
+            const data = await GetTechnologies();
             setTechnologies(data);
             setLoading(false);
         }

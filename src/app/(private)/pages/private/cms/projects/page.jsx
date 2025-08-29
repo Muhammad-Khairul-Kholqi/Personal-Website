@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { Search } from "lucide-react";
 import Swal from "sweetalert2";
 import { GetProjects, CreateProject, UpdateProject, DeleteProject } from "@/app/api/projectApi";
-import { getTechnologies } from "@/app/api/technologyApi";
+import { GetTechnologies } from "@/app/api/technologyApi";
 import Pagination from "@/app/components/molecules/pagination";
 import DataModal from "@/app/components/modals/dataModal"
 
@@ -30,7 +30,7 @@ export default function ProjectPage() {
             try {
                 const [projectsData, technologiesData] = await Promise.all([
                     GetProjects(),
-                    getTechnologies()
+                    GetTechnologies()
                 ]);
                 setProjects(projectsData);
                 setTechnologies(technologiesData);
