@@ -56,7 +56,6 @@ export async function GetDataUser() {
     } catch (error) {
         console.error("Failed to fetch user data:", error);
         if (error.response?.status === 401) {
-            // Token expired atau invalid
             localStorage.removeItem("token");
             throw new Error('Authentication failed. Please login again.');
         }
@@ -64,7 +63,6 @@ export async function GetDataUser() {
     }
 }
 
-// Function untuk update profile data
 export async function UpdateUserProfile(profileData) {
     try {
         const token = localStorage.getItem("token");
@@ -73,7 +71,6 @@ export async function UpdateUserProfile(profileData) {
             throw new Error('No authentication token found');
         }
 
-        // Jika ada file image, gunakan FormData
         let requestData;
         let headers = {
             Authorization: `Bearer ${token}`
@@ -81,7 +78,6 @@ export async function UpdateUserProfile(profileData) {
 
         if (profileData instanceof FormData) {
             requestData = profileData;
-            // Jangan set Content-Type untuk FormData, biarkan browser yang set
         } else {
             requestData = profileData;
             headers['Content-Type'] = 'application/json';
@@ -102,7 +98,6 @@ export async function UpdateUserProfile(profileData) {
     }
 }
 
-// Function untuk update password
 export async function UpdateUserPassword(passwordData) {
     try {
         const token = localStorage.getItem("token");
