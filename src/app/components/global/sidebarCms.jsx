@@ -41,6 +41,7 @@ export default function SidebarCms({ isOpen, onClose, onLogout }) {
             submenu: [
                 { label: "Career", href: "/pages/private/cms/career" },
                 { label: "Service", href: "/pages/private/cms/service" },
+                { label: "Hard Skill", href: "/pages/private/cms/hard-skill" },
                 { label: "Soft Skill", href: "/pages/private/cms/soft-skill" },
             ]
         },
