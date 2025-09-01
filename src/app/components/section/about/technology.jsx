@@ -29,8 +29,8 @@ export default function Technology() {
 
             {loading ? (
                 <div className="space-y-5 mt-5">
-                    <LoadingSkeleton width="100%" height="80px" />
-                    <LoadingSkeleton width="100%" height="80px" />
+                    <LoadingSkeleton width="100%" height="60px" />
+                    <LoadingSkeleton width="100%" height="60px" />
                 </div>
             ) : (
                 <>
@@ -40,14 +40,13 @@ export default function Technology() {
                                 {[...technologies, ...technologies].map((tech, i) => (
                                     <div
                                         key={`top-${i}`}
-                                        className="flex items-center gap-2 border border-gray-200 px-4 py-2 rounded-full"
+                                        className="flex items-center gap-2 border border-gray-200 px-5 py-3 rounded-full"
                                     >
-                                        <div className="w-8 h-8 relative">
-                                            <img
-                                                src={tech.image}
-                                                alt={tech.name}
-                                            />
-                                        </div>
+                                        <img
+                                            src={tech.image}
+                                            alt={tech.name}
+                                            className="w-8 h-8 object-contain"
+                                        />
                                         <span className="text-sm text-gray-700 whitespace-nowrap">{tech.name}</span>
                                     </div>
                                 ))}
@@ -60,14 +59,13 @@ export default function Technology() {
                                 {[...technologies, ...technologies].map((tech, i) => (
                                     <div
                                         key={`bottom-${i}`}
-                                        className="flex items-center gap-2 border border-gray-200 px-4 py-2 rounded-full"
+                                        className="flex items-center gap-2 border border-gray-200 px-5 py-3 rounded-full"
                                     >
-                                        <div className="w-8 h-8 relative">
-                                            <img
-                                                src={tech.image}
-                                                alt={tech.name}
-                                            />
-                                        </div>
+                                        <img
+                                            src={tech.image}
+                                            alt={tech.name}
+                                            className="w-8 h-8 object-contain"
+                                        />
                                         <span className="text-sm text-gray-700 whitespace-nowrap">{tech.name}</span>
                                     </div>
                                 ))}

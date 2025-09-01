@@ -2,18 +2,20 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
-import CertificateData from "@/app/data/certificateData";
+import { GetCertificates } from "@/app/api/certificateApi";
+import LoadingSkeleton from "@/app/components/global/loadingSkeleton";
 
 export default function CertificatesPage() {
     const router = useRouter();
     const [currentPage, setCurrentPage] = useState(1);
     const [isClient, setIsClient] = useState(false);
+    const [certificates, setCertificates] = useState([]);
+    const [loading, setLoading] = useState(true);
     const certificatesPerPage = 6;
 
     const indexOfLast = currentPage * certificatesPerPage;
     const indexOfFirst = indexOfLast - certificatesPerPage;
-    const totalPages = Math.ceil(CertificateData.length / certificatesPerPage);
+    const totalPages = Math.ceil(certificates.length / certificatesPerPage);
 
     const [displayedCertificates, setDisplayedCertificates] = useState([]);
 
@@ -28,16 +30,35 @@ export default function CertificatesPage() {
     }, []);
 
     useEffect(() => {
-        const sliced = CertificateData.slice(indexOfFirst, indexOfLast);
+        async function fetchCertificates() {
+            setLoading(true);
+            try {
+                const data = await GetCertificates();
+
+                const sortedCertificates = data.sort((a, b) =>
+                    new Date(b.time) - new Date(a.time)
+                );
+
+                setCertificates(sortedCertificates);
+            } catch (error) {
+                console.error("Error fetching certificates:", error);
+            }
+            setLoading(false);
+        }
+        fetchCertificates();
+    }, []);
+
+    useEffect(() => {
+        const sliced = certificates.slice(indexOfFirst, indexOfLast);
         setDisplayedCertificates(sliced);
-    }, [indexOfFirst, indexOfLast]);
+    }, [certificates, indexOfFirst, indexOfLast]);
 
     const changePage = (pageNum) => {
         setCurrentPage(pageNum);
         router.push(`/pages/certificates?page=${pageNum}`);
     };
 
-    if (!isClient) {
+    if (!isClient || loading) {
         return (
             <div>
                 <h1 className="text-2xl">Certification</h1>
@@ -46,14 +67,7 @@ export default function CertificatesPage() {
 
                 <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
                     {Array.from({ length: certificatesPerPage }).map((_, idx) => (
-                        <div key={idx} className="border border-gray-200 p-5 rounded-xl animate-pulse">
-                            <div className="bg-gray-200 h-[250px] rounded-lg mb-3"></div>
-                            <div className="bg-gray-200 h-6 rounded mb-3"></div>
-                            <div className="flex gap-5">
-                                <div className="bg-gray-200 h-4 w-24 rounded"></div>
-                                <div className="bg-gray-200 h-4 w-16 rounded"></div>
-                            </div>
-                        </div>
+                        <LoadingSkeleton key={idx} width="100%" height="300px" />
                     ))}
                 </div>
             </div>
@@ -69,37 +83,41 @@ export default function CertificatesPage() {
             <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
                 {displayedCertificates.map((certificate, idx) => (
                     <div
-                        key={idx}
+                        key={certificate.id}
                         className="border border-gray-200 p-5 rounded-xl group flex flex-col h-full min-h-[410px]"
                     >
                         <div className="relative overflow-hidden rounded-lg">
-                            <Image
+                            <img
                                 src={certificate.image}
-                                width={500}
-                                height={200}
-                                alt={certificate.name}
+                                alt={certificate.title}
                                 className="border w-full h-[250px] border-gray-200 rounded-lg object-cover group-hover:scale-110 duration-300"
                             />
                         </div>
 
-                        <h1 className="mt-3 text-xl">{certificate.name}</h1>
+                        <h1 className="mt-3 text-xl">{certificate.title}</h1>
 
                         <div className="flex items-center gap-5 mt-auto">
                             <div className="flex items-center gap-2">
                                 <div className="bg-black p-0.5 rounded-full" />
-                                <h2>{certificate.institution}</h2>
+                                <h2>{certificate.company}</h2>
                             </div>
 
                             <div className="flex items-center gap-2">
                                 <div className="bg-black p-0.5 rounded-full" />
-                                <h2>{certificate.year}</h2>
+                                <h2>
+                                    {new Date(certificate.time).toLocaleDateString("en-GB", {
+                                        day: "numeric",
+                                        month: "long",
+                                        year: "numeric",
+                                    })}
+                                </h2>
                             </div>
                         </div>
                     </div>
                 ))}
             </div>
 
-            {CertificateData.length > certificatesPerPage && (
+            {certificates.length > certificatesPerPage && (
                 <div className="flex justify-center items-center gap-2 mt-8">
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map((pg) => (
                         <button
