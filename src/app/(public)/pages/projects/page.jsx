@@ -4,13 +4,16 @@ import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Github, SquareArrowOutUpRight, ScanLine, Search } from "lucide-react"
-import { ProjectsData } from "@/app/data/projectsData"
 import { useState, useMemo, useEffect } from "react"
+import { GetProjects } from "@/app/api/projectApi"
+import LoadingSkeleton from "@/app/components/global/loadingSkeleton";
 
 export default function ProjectsPage() {
     const router = useRouter()
     const [currentPage, setCurrentPage] = useState(1)
     const [isClient, setIsClient] = useState(false)
+    const [projects, setProjects] = useState([])
+    const [loading, setLoading] = useState(true)
     const projectsPerPage = 6
 
     const [filterStatus, setFilterStatus] = useState(null)
@@ -26,14 +29,33 @@ export default function ProjectsPage() {
         }
     }, [])
 
+    useEffect(() => {
+        async function fetchProjects() {
+            setLoading(true)
+            try {
+                const data = await GetProjects()
+
+                const sortedProjects = data.sort((a, b) =>
+                    new Date(b.created_at) - new Date(a.created_at)
+                )
+
+                setProjects(sortedProjects)
+            } catch (error) {
+                console.error("Error fetching projects:", error)
+            }
+            setLoading(false)
+        }
+        fetchProjects()
+    }, [])
+
     const filteredProjects = useMemo(() => {
-        return ProjectsData.filter((project) => {
+        return projects.filter((project) => {
             const matchesStatus = filterStatus ? project.status === filterStatus : true
-            const matchesSearch = project.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+            const matchesSearch = project.title.toLowerCase().includes(searchKeyword.toLowerCase()) ||
                 project.description.toLowerCase().includes(searchKeyword.toLowerCase())
             return matchesStatus && matchesSearch
         })
-    }, [filterStatus, searchKeyword])
+    }, [projects, filterStatus, searchKeyword])
 
     const totalPages = Math.ceil(filteredProjects.length / projectsPerPage)
     const startIndex = (currentPage - 1) * projectsPerPage
@@ -55,7 +77,7 @@ export default function ProjectsPage() {
         setCurrentPage(1)
     }, [filterStatus, searchKeyword])
 
-    if (!isClient) {
+    if (!isClient || loading) {
         return (
             <>
                 <h1 className="text-2xl">Projects</h1>
@@ -65,27 +87,15 @@ export default function ProjectsPage() {
                 <div className="flex flex-col md:flex-row items-center gap-5 w-full">
                     <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-1 grid-cols-1 gap-3 w-full md:max-w-[50%]">
                         {Array.from({ length: 3 }).map((_, idx) => (
-                            <div key={idx} className="bg-gray-200 h-12 rounded-lg animate-pulse"></div>
+                            <LoadingSkeleton key={idx} width="100%" height="48px" />
                         ))}
                     </div>
-                    <div className="w-full md:max-w-[50%] bg-gray-200 h-12 rounded-lg animate-pulse"></div>
+                    <LoadingSkeleton width="100%" height="48px" />
                 </div>
 
                 <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 items-center gap-5 mt-5">
                     {Array.from({ length: projectsPerPage }).map((_, idx) => (
-                        <div key={idx} className="border border-gray-200 p-5 rounded-lg animate-pulse">
-                            <div className="bg-gray-200 h-48 rounded-lg mb-3"></div>
-                            <div className="flex items-center justify-between gap-3 mb-3">
-                                <div className="bg-gray-200 h-6 w-32 rounded"></div>
-                                <div className="bg-gray-200 h-8 w-20 rounded-full"></div>
-                            </div>
-                            <div className="bg-gray-200 h-4 w-full rounded mb-3"></div>
-                            <div className="grid grid-cols-3 gap-2">
-                                <div className="bg-gray-200 h-10 rounded"></div>
-                                <div className="bg-gray-200 h-10 rounded"></div>
-                                <div className="bg-gray-200 h-10 rounded"></div>
-                            </div>
-                        </div>
+                        <LoadingSkeleton key={idx} width="100%" height="400px" />
                     ))}
                 </div>
             </>
@@ -131,24 +141,28 @@ export default function ProjectsPage() {
 
             {paginatedProjects.length > 0 ? (
                 <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 items-center gap-5 mt-5">
-                    {paginatedProjects.map((project, idx) => {
-                        const linkCount = [project.repository, project.demo, project.detail].filter(Boolean).length
-                        const gridCols = linkCount === 1 ? "grid-cols-1" : linkCount === 2 ? "grid-cols-2" : "grid-cols-3"
+                    {paginatedProjects.map((project) => {
+                        const availableLinks = [
+                            project.url_github && { type: 'repository', url: project.url_github },
+                            project.url_demo && { type: 'demo', url: project.url_demo },
+                            { type: 'detail', url: `/pages/detail-project/${encodeURIComponent(project.title)}` }
+                        ].filter(Boolean)
+
+                        const gridCols = availableLinks.length === 1 ? "grid-cols-1" :
+                            availableLinks.length === 2 ? "grid-cols-2" : "grid-cols-3"
 
                         return (
-                            <div key={idx} className="border border-gray-200 p-5 rounded-lg group">
+                            <div key={project.id} className="border border-gray-200 p-5 rounded-lg group">
                                 <div className="relative overflow-hidden rounded-lg">
-                                    <Image
+                                    <img
                                         src={project.image}
-                                        width={500}
-                                        height={200}
-                                        alt={project.name}
+                                        alt={project.title}
                                         className="border w-full h-[200px] border-gray-200 rounded-lg object-cover group-hover:scale-110 duration-300"
                                     />
                                 </div>
                                 <div className="mt-3">
                                     <div className="flex items-center justify-between gap-3">
-                                        <h1 className="text-xl">{project.name}</h1>
+                                        <h1 className="text-xl">{project.title}</h1>
                                         <div className={`${statusColor(project.status).bg} px-5 py-2 rounded-full`}>
                                             <span className={statusColor(project.status).text}>
                                                 {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
@@ -157,30 +171,38 @@ export default function ProjectsPage() {
                                     </div>
                                     <p className="text-gray-600 mt-3">{shortText(project.description)}</p>
                                     <div className={`mt-3 grid ${gridCols} items-center gap-2`}>
-                                        {project.repository && (
-                                            <a href={project.repository} target="_blank" rel="noopener noreferrer">
-                                                <div className="flex items-center gap-2 p-2 rounded-md justify-center border border-gray-200 text-gray-700 hover:bg-gray-50">
-                                                    <Github className="w-5 h-5" />
-                                                    <span>Repository</span>
-                                                </div>
-                                            </a>
-                                        )}
-                                        {project.demo && (
-                                            <a href={project.demo} target="_blank" rel="noopener noreferrer">
-                                                <div className="flex items-center gap-2 p-2 rounded-md justify-center border border-gray-200 text-gray-700 hover:bg-gray-50">
-                                                    <SquareArrowOutUpRight className="w-4 h-4" />
-                                                    <span>Demo</span>
-                                                </div>
-                                            </a>
-                                        )}
-                                        {project.detail && (
-                                            <Link href={`/pages/detail-project/${project.detail}`}>
-                                                <div className="flex items-center gap-2 p-2 rounded-md justify-center border border-gray-200 text-gray-700 hover:bg-gray-50">
-                                                    <ScanLine className="w-4 h-4" />
-                                                    <span>Detail</span>
-                                                </div>
-                                            </Link>
-                                        )}
+                                        {availableLinks.map((link, idx) => {
+                                            if (link.type === 'repository') {
+                                                return (
+                                                    <a key={idx} href={link.url} target="_blank" rel="noopener noreferrer">
+                                                        <div className="flex items-center gap-2 p-2 rounded-md justify-center border border-gray-200 text-gray-700 hover:bg-gray-50">
+                                                            <Github className="w-5 h-5" />
+                                                            <span>Repository</span>
+                                                        </div>
+                                                    </a>
+                                                )
+                                            }
+                                            if (link.type === 'demo') {
+                                                return (
+                                                    <a key={idx} href={link.url} target="_blank" rel="noopener noreferrer">
+                                                        <div className="flex items-center gap-2 p-2 rounded-md justify-center border border-gray-200 text-gray-700 hover:bg-gray-50">
+                                                            <SquareArrowOutUpRight className="w-4 h-4" />
+                                                            <span>Demo</span>
+                                                        </div>
+                                                    </a>
+                                                )
+                                            }
+                                            if (link.type === 'detail') {
+                                                return (
+                                                    <Link key={idx} href={link.url}>
+                                                        <div className="flex items-center gap-2 p-2 rounded-md justify-center border border-gray-200 text-gray-700 hover:bg-gray-50">
+                                                            <ScanLine className="w-4 h-4" />
+                                                            <span>Detail</span>
+                                                        </div>
+                                                    </Link>
+                                                )
+                                            }
+                                        })}
                                     </div>
                                 </div>
                             </div>

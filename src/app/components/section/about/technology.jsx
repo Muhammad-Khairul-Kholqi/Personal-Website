@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import LoadingSkeleton from "../../global/loadingSkeleton";
+import LoadingSkeleton from "@/app/components/global/loadingSkeleton";
 import { GetTechnologies } from "@/app/api/technologyApi";
 
 export default function Technology() {

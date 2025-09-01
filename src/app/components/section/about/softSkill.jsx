@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from "react";
 import { GetSoftSkills } from "@/app/api/softSkillApi";
-import LoadingSkeleton from "../../global/loadingSkeleton";
+import LoadingSkeleton from "@/app/components/global/loadingSkeleton";
 import Image from "next/image";
 
 const SoftSkillCard = ({ skill, backgroundImage }) => (

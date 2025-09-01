@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { GetCareers } from "@/app/api/careerApi";
-import LoadingSkeleton from "../../global/loadingSkeleton";
+import LoadingSkeleton from "@/app/components/global/loadingSkeleton";
 import { GetTechnologies } from "@/app/api/technologyApi";
 
 const CAREER_TYPES = [
