@@ -142,6 +142,7 @@ export default function ServicesPage() {
                                     <th className="px-6 py-3">Title</th>
                                     <th className="px-6 py-3">Description</th>
                                     <th className="px-6 py-3">Hashtag</th>
+                                    <th className="px-6 py-3">Color</th>
                                     <th className="px-6 py-3">Action</th>
                                 </tr>
                             </thead>
@@ -167,6 +168,9 @@ export default function ServicesPage() {
                                                 <div className="max-h-[120px] overflow-y-auto pr-2 scroll-thin">{service.description}</div>
                                             </td>
                                             <td className="px-6 py-4 align-top">#{service.hashtag}</td>
+                                            <td className="px-6 py-4 align-top" style={{ color: `#${service.color}` }}>
+                                                #{service.color}
+                                            </td>
                                             <td className="px-6 py-4 align-top flex items-center gap-3">
                                                 <button
                                                     className="text-blue-400 bg-blue-100 hover:bg-blue-200 hover:text-blue-500 px-3 py-1 rounded-md cursor-pointer"
@@ -209,6 +213,7 @@ export default function ServicesPage() {
                     { name: "description", label: "Description", required: true },
                     { name: "hashtag", label: "Hashtag", required: true },
                     { name: "icon", label: "Icon", required: true },
+                    { name: "color", label: "Color", required: true },
                 ]}
                 onSubmit={handleModalSubmit}
                 initialData={selectedService || {}}
