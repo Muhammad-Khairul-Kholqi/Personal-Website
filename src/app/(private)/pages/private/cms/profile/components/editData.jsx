@@ -13,7 +13,8 @@ export default function EditData({
         username: '',
         email: '',
         address: '',
-        description: '',
+        short_description: '',
+        long_description: '',
         image: null,
         resume: null
     });
@@ -34,7 +35,8 @@ export default function EditData({
                 username: profile.username || '',
                 email: profile.email || '',
                 address: profile.address || '',
-                description: profile.description || '',
+                short_description: profile.short_description || '',
+                long_description: profile.long_description || '',
                 image: null,
                 resume: null
             });
@@ -111,7 +113,8 @@ export default function EditData({
         formData.append('fullname', editFormData.fullname);
         formData.append('username', editFormData.username);
         formData.append('address', editFormData.address);
-        formData.append('description', editFormData.description);
+        formData.append('short_description', editFormData.short_description);
+        formData.append('long_description', editFormData.long_description);
         formData.append('email', editFormData.email);
 
         const skillIds = selectedSkills.map(skill => skill.id);
@@ -309,13 +312,27 @@ export default function EditData({
                         </div>
                     </div>
 
-                    <div className="md:col-span-2">
+                    <div className='md:col-span-2'>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Description
+                            Short Description
                         </label>
                         <textarea
-                            name="description"
-                            value={editFormData.description}
+                            name="short_description"
+                            value={editFormData.short_description}
+                            onChange={handleEditFormChange}
+                            rows="4"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Tell us about yourself"
+                        />
+                    </div>
+
+                    <div className='md:col-span-2'>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Long Description
+                        </label>
+                        <textarea
+                            name="long_description"
+                            value={editFormData.long_description}
                             onChange={handleEditFormChange}
                             rows="4"
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"

@@ -87,9 +87,16 @@ export default function MyData({ profile, loading, error }) {
                 </div>
 
                 <div className="bg-white p-4 rounded-lg border border-gray-200 md:col-span-2">
-                    <label className="text-sm text-gray-600">Description:</label>
+                    <label className="text-sm text-gray-600">Short Description:</label>
                     <p className="font-medium mt-1">
-                        {profile.description || 'No description available'}
+                        {profile.short_description || 'No short description available'}
+                    </p>
+                </div>
+
+                <div className="bg-white p-4 rounded-lg border border-gray-200 md:col-span-2">
+                    <label className="text-sm text-gray-600">Long Description:</label>
+                    <p className="font-medium mt-1">
+                        {profile.long_description || 'No long description available'}
                     </p>
                 </div>
             </div>
