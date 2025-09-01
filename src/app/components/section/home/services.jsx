@@ -1,43 +1,26 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Settings, SquareTerminal, PencilRuler } from "lucide-react";
+import { Settings } from "lucide-react";
 import { GetServices } from "@/app/api/servicesApi";
 import LoadingSkeleton from "@/app/components/global/loadingSkeleton";
 import * as Icons from "lucide-react"
 
 console.log(Object.keys(Icons))
 
-const serviceList = [
-    {
-        icon: SquareTerminal,
-        title: "Website Development",
-        color: "#ED6262",
-        tag: "#coding",
-        desc: "Create stunning, easy-to-use frontend web applications using modern technologies.",
-    },
-    {
-        icon: PencilRuler,
-        title: "UI Designer",
-        color: "#76D0EB",
-        tag: "#design",
-        desc: "Provides a modern and responsive design across a variety of devices.",
-    },
-];
-
 export default function Services() {
     const [services, setServices] = useState([]);
     const [laoadingServices, setLoadingServices] = useState(true);
 
     useEffect(() => {
-            async function fetchService() {
-                setLoadingServices(true);
-                const data = await GetServices();
-                setServices(data);
-                setLoadingServices(false);
-            }
-            fetchService();
-        }, []);
+        async function fetchService() {
+            setLoadingServices(true);
+            const data = await GetServices();
+            setServices(data);
+            setLoadingServices(false);
+        }
+        fetchService();
+    }, []);
     return (
         <div>
             <div className="flex items-center gap-3">

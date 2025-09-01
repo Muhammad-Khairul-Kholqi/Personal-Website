@@ -140,6 +140,7 @@ export default function EducationPage() {
                                     <th className="px-6 py-3">No</th>
                                     <th className="px-6 py-3">School Name</th>
                                     <th className="px-6 py-3">School Logo</th>
+                                    <th className="px-6 py-3">Location</th>
                                     <th className="px-6 py-3">Start Time</th>
                                     <th className="px-6 py-3">End Time</th>
                                     <th className="px-6 py-3">Action</th>
@@ -162,6 +163,7 @@ export default function EducationPage() {
                                                     "-"
                                                 )}
                                             </td>
+                                            <td className="px-6 py-4">{education.location}</td>
                                             <td className="px-6 py-4">
                                                 {new Date(education.start_time).toLocaleDateString("en-GB", {
                                                     day: "numeric",
@@ -223,6 +225,13 @@ export default function EducationPage() {
                         label: "School Name",
                         type: "text",
                         placeholder: "Enter school name",
+                        required: true
+                    },
+                    {
+                        name: "location",
+                        label: "Location",
+                        type: "text",
+                        placeholder: "Enter location",
                         required: true
                     },
                     {

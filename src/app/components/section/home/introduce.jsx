@@ -57,9 +57,8 @@ export default function Introduction() {
             ) : (
                 <div className="flex gap-[5px] items-center mb-4">
                     <h1 className="text-3xl font-sora">
-                        Hi, I'm {users?.fullname}
+                        Hi, I'm {users?.fullname} 👋
                     </h1>
-                    <h1 className="shake-animation text-3xl">👋</h1>
                 </div>
             )}
 
@@ -102,13 +101,13 @@ export default function Introduction() {
                 )}
             </div>
 
-            <div className="flex items-center gap-5">
+            <div className="flex flex-wrap items-center gap-5">
                 {loadingUser ? (
                     <LoadingSkeleton width="170px" height="24px" />
                 ) : (
                     <a href={users?.resume} download className='flex items-center gap-2'>
                         <Download className="w-5 h-5 -mt-1 animate-bounce" />
-                        <span className="text-sm text-center">Download Resume</span>
+                        <span className="text-sm text-center">See Resume</span>
                     </a>
                 )}
 

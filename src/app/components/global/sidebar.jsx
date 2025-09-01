@@ -10,8 +10,6 @@ import LoadingSkeleton from "@/app/components/global/loadingSkeleton";
 export default function Sidebar() {
     const [users, setUsers] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [forceLoading, setForceLoading] = useState(true);
-    const showLoading = forceLoading || loading;
 
     useEffect(() => {
         async function fetchData() {
@@ -47,19 +45,19 @@ export default function Sidebar() {
 
             <div className="mt-14">
                 <div className="flex items-center gap-1 justify-center">
-                    {showLoading ? (
+                    {loading ? (
                         <LoadingSkeleton width="170px" height="30px" />
                     ) : (
                         <h2 className="text-xl font-bold tracking-wide text-center">
                             {users?.fullname}
                         </h2>
                     )}
-                    {!showLoading && (
+                    {!loading && (
                         <BadgeCheck className="h-5 w-5 mt-1 text-white" fill="#60A5FA" />
                     )}
                 </div>
                 <span className="text-center flex justify-center text-gray-600">
-                    {showLoading ? (
+                    {loading ? (
                         <LoadingSkeleton width="100px" height="16px" className="mt-2" />
                     ) : (
                         `@${users?.username}`
