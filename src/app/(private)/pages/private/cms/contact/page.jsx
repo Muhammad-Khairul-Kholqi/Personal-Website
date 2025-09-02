@@ -142,6 +142,7 @@ export default function ContactsPage() {
                                     <th className="px-6 py-3">Title</th>
                                     <th className="px-6 py-3">Username</th>
                                     <th className="px-6 py-3">Link</th>
+                                    <th className="px-6 py-3">Color</th>
                                     <th className="px-6 py-3">Action</th>
                                 </tr>
                             </thead>
@@ -169,6 +170,7 @@ export default function ContactsPage() {
                                                     {contact.link}
                                                 </a>
                                             </td>
+                                            <td className="px-6 py-4 align-top" style={{ color: `#${contact.color}` }}>#{contact.color}</td>
                                             <td className="px-6 py-4 align-top flex items-center gap-3">
                                                 <button
                                                     className="text-blue-400 bg-blue-100 hover:bg-blue-200 hover:text-blue-500 px-3 py-1 rounded-md cursor-pointer"
@@ -211,6 +213,7 @@ export default function ContactsPage() {
                     { name: "username", label: "Username", required: true },
                     { name: "link", label: "Link", required: true },
                     { name: "icon", label: "Icon", required: true },
+                    { name: "color", label: "Color", required: true },
                 ]}
                 onSubmit={handleModalSubmit}
                 initialData={selectedContact || {}}

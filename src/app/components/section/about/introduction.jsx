@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { GetDataUser } from "@/app/api/authApi"
+import { GetMainProfile } from "@/app/api/authApi"
 import LoadingSkeleton from "@/app/components/global/loadingSkeleton";
 
 export default function Introduction() {
@@ -10,7 +10,7 @@ export default function Introduction() {
     useEffect(() => {
         async function fetchUser() {
             setLoadingUser(true);
-            const data = await GetDataUser();
+            const data = await GetMainProfile();
             setUsers(data);
             setLoadingUser(false);
         }

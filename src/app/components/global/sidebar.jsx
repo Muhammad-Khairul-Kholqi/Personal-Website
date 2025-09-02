@@ -4,7 +4,7 @@ import Image from "next/image"
 import LinkLists from "@/app/components/molecules/linkLists"
 import SosmedSidebarLists from "@/app/components/molecules/sosmedSidebarLists"
 import { BadgeCheck } from "lucide-react"
-import { GetDataUser } from "@/app/api/authApi"
+import { GetMainProfile } from "@/app/api/authApi"
 import LoadingSkeleton from "@/app/components/global/loadingSkeleton";
 
 export default function Sidebar() {
@@ -14,7 +14,7 @@ export default function Sidebar() {
     useEffect(() => {
         async function fetchData() {
             setLoading(true);
-            const data = await GetDataUser();
+            const data = await GetMainProfile();
             setUsers(data);
             setLoading(false);
         }

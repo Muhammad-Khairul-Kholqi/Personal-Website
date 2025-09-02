@@ -10,7 +10,7 @@ console.log(Object.keys(Icons))
 
 export default function Services() {
     const [services, setServices] = useState([]);
-    const [laoadingServices, setLoadingServices] = useState(true);
+    const [loadingServices, setLoadingServices] = useState(true);
 
     useEffect(() => {
         async function fetchService() {
@@ -29,7 +29,7 @@ export default function Services() {
             </div>
             <p className="text-[#525252] mt-2">I can deliver the following services</p>
 
-            {laoadingServices ? (
+            {loadingServices ? (
                 <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 items-start gap-5 mt-3">
                     <LoadingSkeleton width="100%" height="150px" className="mb-4" />
                     <LoadingSkeleton width="100%" height="150px" className="mb-4" />

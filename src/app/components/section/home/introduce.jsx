@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { Download } from 'lucide-react';
-import { GetDataUser } from "@/app/api/authApi"
+import { GetMainProfile } from "@/app/api/authApi"
 import { GetSkills } from '@/app/api/skillApi';
 import LoadingSkeleton from "@/app/components/global/loadingSkeleton";
 
@@ -16,7 +16,7 @@ export default function Introduction() {
     useEffect(() => {
         async function fetchUser() {
             setLoadingUser(true);
-            const data = await GetDataUser();
+            const data = await GetMainProfile();
             setUsers(data);
             setLoadingUser(false);
         }

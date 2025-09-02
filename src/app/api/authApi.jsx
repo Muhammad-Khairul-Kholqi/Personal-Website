@@ -63,6 +63,16 @@ export async function GetDataUser() {
     }
 }
 
+export async function GetMainProfile() {
+    try {
+        const res = await axios.get(`${BASE_URL}/api/auth/public-profile`);
+        return res.data;
+    } catch (error) {
+        console.error("Failed to fetch main profile:", error);
+        throw error;
+    }
+}
+
 export async function UpdateUserProfile(profileData) {
     try {
         const token = localStorage.getItem("token");
