@@ -10,7 +10,7 @@ export const metadata = {
   title: "Khairul Kholqi | Personal Website",
   description: "Personal portfolio and blog",
   icons: {
-    icon: "https://drive.google.com/uc?export=view&id=1R8Jp_g8IaBcS635L91pQooHM7Ns7j7xh"
+    icon: "https://eprafgqbpruyjkesupcw.supabase.co/storage/v1/object/public/user-images/uploads/user-images/1756642833123-612061588.png"
   }
 };
 
