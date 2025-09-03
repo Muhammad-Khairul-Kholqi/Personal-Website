@@ -12,6 +12,10 @@ export default function MobileHeader() {
         setIsOpen(!isOpen);
     };
 
+    const closeMenu = () => {
+        setIsOpen(false);
+    };
+
     return (
         <>
             <header className="lg:hidden fixed top-0 left-0 right-0 bg-white z-40 px-5 py-3">
@@ -48,7 +52,7 @@ export default function MobileHeader() {
             <div className={`lg:hidden fixed top-12 left-0 right-0 bg-white shadow-lg z-30 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-y-0' : '-translate-y-full'
                 }`}>
                 <div className="px-5 py-4">
-                    <LinkLists />
+                    <LinkLists onLinkClick={closeMenu} />
                 </div>
             </div>
 

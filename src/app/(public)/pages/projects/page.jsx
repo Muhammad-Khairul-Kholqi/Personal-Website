@@ -161,7 +161,7 @@ export default function ProjectsPage() {
                                     />
                                 </div>
                                 <div className="mt-3">
-                                    <div className="flex items-center justify-between gap-3">
+                                    <div className="flex items-center justify-between flex-wrap gap-3">
                                         <h1 className="text-xl">{project.title}</h1>
                                         <div className={`${statusColor(project.status).bg} px-5 py-2 rounded-full`}>
                                             <span className={statusColor(project.status).text}>
@@ -177,7 +177,7 @@ export default function ProjectsPage() {
                                                     <a key={idx} href={link.url} target="_blank" rel="noopener noreferrer">
                                                         <div className="flex items-center gap-2 p-2 rounded-md justify-center border border-gray-200 text-gray-700 hover:bg-gray-50">
                                                             <Github className="w-5 h-5" />
-                                                            <span>Repository</span>
+                                                            <span className="hidden sm:inline">Repository</span>
                                                         </div>
                                                     </a>
                                                 )
@@ -187,7 +187,7 @@ export default function ProjectsPage() {
                                                     <a key={idx} href={link.url} target="_blank" rel="noopener noreferrer">
                                                         <div className="flex items-center gap-2 p-2 rounded-md justify-center border border-gray-200 text-gray-700 hover:bg-gray-50">
                                                             <SquareArrowOutUpRight className="w-4 h-4" />
-                                                            <span>Demo</span>
+                                                            <span className="hidden sm:inline">Demo</span>
                                                         </div>
                                                     </a>
                                                 )
@@ -197,7 +197,7 @@ export default function ProjectsPage() {
                                                     <Link key={idx} href={link.url}>
                                                         <div className="flex items-center gap-2 p-2 rounded-md justify-center border border-gray-200 text-gray-700 hover:bg-gray-50">
                                                             <ScanLine className="w-4 h-4" />
-                                                            <span>Detail</span>
+                                                            <span className="hidden sm:inline">Detail</span>
                                                         </div>
                                                     </Link>
                                                 )

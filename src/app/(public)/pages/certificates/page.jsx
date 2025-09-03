@@ -84,7 +84,7 @@ export default function CertificatesPage() {
                 {displayedCertificates.map((certificate, idx) => (
                     <div
                         key={certificate.id}
-                        className="border border-gray-200 p-5 rounded-xl group flex flex-col h-full min-h-[410px]"
+                        className="border border-gray-200 p-5 rounded-xl group flex flex-col h-full min-h-[430px]"
                     >
                         <div className="relative overflow-hidden rounded-lg">
                             <img

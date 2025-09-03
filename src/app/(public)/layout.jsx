@@ -10,8 +10,10 @@ export default function PublicLayout({ children }) {
       <div className="flex justify-center p-5 pt-20 lg:pt-5 h-screen">
         <div className="w-full max-w-[1300px] flex h-full">
           <Sidebar />
-          <section className="scrollbar-hide w-full lg:max-w-[75%] p-5 overflow-y-auto h-full">
-            {children}
+          <section className="scrollbar-hide w-full lg:max-w-[75%] py-5 overflow-y-auto h-full flex flex-col">
+            <div className="flex-1">
+              {children}
+            </div>
             <Footer />
           </section>
         </div>
