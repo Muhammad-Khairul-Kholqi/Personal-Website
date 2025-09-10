@@ -22,7 +22,6 @@ export default function DataModal({
     const [filePreviews, setFilePreviews] = useState({});
     const [selectedTechnologies, setSelectedTechnologies] = useState([]);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
     const [projectImages, setProjectImages] = useState([]);
     const [primaryImageIndex, setPrimaryImageIndex] = useState(0);
 
@@ -193,29 +192,36 @@ export default function DataModal({
         if (isReadOnly || !onSubmit) return;
 
         try {
+            console.log('Form Data:', formData);
+            console.log('Project Images:', projectImages);
+            console.log('Selected Technologies:', selectedTechnologies);
+            console.log('Primary Image Index:', primaryImageIndex);
+
             const multipleImageField = fields.find(f => f.type === "multiple_image_upload");
             if (multipleImageField?.required && projectImages.length === 0) {
                 Swal.fire("Error", "At least one image is required", "error");
                 return;
             }
 
-            const hasFileFields = fields.some(field =>
-                field.type === "file" || field.type === "multiple_image_upload"
-            );
+            const hasNewFiles = projectImages.some(img => img.file);
+            const hasFileFields = fields.some(field => field.type === "file") || hasNewFiles;
 
             let submitData;
+
             if (hasFileFields) {
                 submitData = new FormData();
 
                 Object.entries(formData).forEach(([key, value]) => {
-                    if (key !== 'technology_ids') {
-                        submitData.append(key, value || "");
+                    if (key !== 'technology_ids' && value !== undefined && value !== null) {
+                        submitData.append(key, value);
                     }
                 });
 
-                selectedTechnologies.forEach((tech) => {
-                    submitData.append("technology_ids[]", tech.id);
-                });
+                if (selectedTechnologies.length > 0) {
+                    selectedTechnologies.forEach((tech) => {
+                        submitData.append("technology_ids[]", tech.id);
+                    });
+                }
 
                 Object.entries(fileData).forEach(([key, file]) => {
                     if (file) {
@@ -224,32 +230,52 @@ export default function DataModal({
                 });
 
                 if (projectImages.length > 0) {
-                    const imagesData = projectImages.map((img, index) => ({
-                        image_url: img.file ? null : img.image_url,
-                        image_order: index + 1,
-                        is_primary: img.is_primary || index === primaryImageIndex
-                    }));
+                    if (hasNewFiles) {
+                        const imagesData = projectImages.map((img, index) => ({
+                            image_url: img.file ? null : img.image_url,
+                            image_order: img.image_order || index + 1,
+                            is_primary: img.is_primary || index === primaryImageIndex
+                        }));
 
-                    submitData.append('images_metadata', JSON.stringify(imagesData));
+                        submitData.append('images_metadata', JSON.stringify(imagesData));
 
-                    projectImages.forEach((img, index) => {
-                        if (img.file) {
-                            submitData.append('images', img.file);
-                        }
-                    });
+                        projectImages.forEach((img) => {
+                            if (img.file) {
+                                submitData.append('images', img.file);
+                            }
+                        });
+                    } else {
+                        const imagesData = projectImages.map((img, index) => ({
+                            image_url: img.image_url,
+                            image_order: img.image_order || index + 1,
+                            is_primary: img.is_primary || index === primaryImageIndex
+                        }));
+
+                        submitData.append('images', JSON.stringify(imagesData));
+                    }
+                }
+
+                console.log('Submitting FormData with entries:');
+                for (let [key, value] of submitData.entries()) {
+                    console.log(key, typeof value === 'object' ? 'File/Blob' : value);
                 }
             } else {
-                const imagesData = projectImages.map((img, index) => ({
+                const imagesData = projectImages.length > 0 ? projectImages.map((img, index) => ({
                     image_url: img.image_url,
-                    image_order: index + 1,
+                    image_order: img.image_order || index + 1,
                     is_primary: img.is_primary || index === primaryImageIndex
-                }));
+                })) : undefined;
 
                 submitData = {
                     ...formData,
                     technology_ids: selectedTechnologies.map((tech) => tech.id),
-                    images: imagesData
                 };
+
+                if (imagesData) {
+                    submitData.images = imagesData;
+                }
+
+                console.log('Submitting JSON:', submitData);
             }
 
             await onSubmit(submitData);
@@ -263,6 +289,7 @@ export default function DataModal({
             setProjectImages([]);
             setPrimaryImageIndex(0);
         } catch (err) {
+            console.error('Submit error:', err);
             Swal.fire("Error", err.response?.data?.error || err.message, "error");
         }
     };
@@ -336,12 +363,12 @@ export default function DataModal({
                                             )}
 
                                             {!isFieldReadOnly && (
-                                                <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center space-x-2">
+                                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center space-x-2">
                                                     {!(img.is_primary || index === primaryImageIndex) && (
                                                         <button
                                                             type="button"
                                                             onClick={() => handleSetPrimaryImage(index)}
-                                                            className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors"
+                                                            className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors cursor-pointer"
                                                             title="Set as primary"
                                                         >
                                                             <Star className="w-4 h-4" />
@@ -350,7 +377,7 @@ export default function DataModal({
                                                     <button
                                                         type="button"
                                                         onClick={() => handleRemoveImage(index)}
-                                                        className="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors"
+                                                        className="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors cursor-pointer"
                                                         title="Remove image"
                                                     >
                                                         <Trash2 className="w-4 h-4" />
