@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { X, ChevronDown, ChevronUp } from "lucide-react";
+import { X, ChevronDown, ChevronUp, Star, Upload, Trash2 } from "lucide-react";
 import Swal from "sweetalert2";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
@@ -22,6 +22,9 @@ export default function DataModal({
     const [filePreviews, setFilePreviews] = useState({});
     const [selectedTechnologies, setSelectedTechnologies] = useState([]);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+    const [projectImages, setProjectImages] = useState([]);
+    const [primaryImageIndex, setPrimaryImageIndex] = useState(0);
 
     const modules = {
         toolbar: isReadOnly ? false : [
@@ -75,6 +78,15 @@ export default function DataModal({
             } else {
                 setSelectedTechnologies([]);
             }
+
+            if (initialData.images && Array.isArray(initialData.images)) {
+                setProjectImages(initialData.images);
+                const primaryIndex = initialData.images.findIndex(img => img.is_primary);
+                setPrimaryImageIndex(primaryIndex >= 0 ? primaryIndex : 0);
+            } else {
+                setProjectImages([]);
+                setPrimaryImageIndex(0);
+            }
         }
     }, [initialData, isOpen, fields]);
 
@@ -97,6 +109,60 @@ export default function DataModal({
             } else {
                 setFilePreviews((prev) => ({ ...prev, [name]: null }));
             }
+        }
+    };
+
+    const handleMultipleImageUpload = (files) => {
+        if (!isReadOnly && files.length > 0) {
+            const fileArray = Array.from(files);
+            const maxFiles = fields.find(f => f.type === "multiple_image_upload")?.maxFiles || 5;
+
+            if (projectImages.length + fileArray.length > maxFiles) {
+                Swal.fire("Error", `Maximum ${maxFiles} images allowed`, "error");
+                return;
+            }
+
+            fileArray.forEach((file) => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        setProjectImages(prev => [...prev, {
+                            file: file,
+                            preview: reader.result,
+                            is_new: true,
+                            is_primary: prev.length === 0 
+                        }]);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+    };
+
+    const handleRemoveImage = (index) => {
+        if (!isReadOnly) {
+            setProjectImages(prev => {
+                const newImages = prev.filter((_, i) => i !== index);
+                if (primaryImageIndex === index && newImages.length > 0) {
+                    setPrimaryImageIndex(0);
+                    newImages[0].is_primary = true;
+                } else if (primaryImageIndex > index) {
+                    setPrimaryImageIndex(prev => prev - 1);
+                }
+                return newImages;
+            });
+        }
+    };
+
+    const handleSetPrimaryImage = (index) => {
+        if (!isReadOnly) {
+            setPrimaryImageIndex(index);
+            setProjectImages(prev =>
+                prev.map((img, i) => ({
+                    ...img,
+                    is_primary: i === index
+                }))
+            );
         }
     };
 
@@ -127,7 +193,15 @@ export default function DataModal({
         if (isReadOnly || !onSubmit) return;
 
         try {
-            const hasFileFields = fields.some(field => field.type === "file");
+            const multipleImageField = fields.find(f => f.type === "multiple_image_upload");
+            if (multipleImageField?.required && projectImages.length === 0) {
+                Swal.fire("Error", "At least one image is required", "error");
+                return;
+            }
+
+            const hasFileFields = fields.some(field =>
+                field.type === "file" || field.type === "multiple_image_upload"
+            );
 
             let submitData;
             if (hasFileFields) {
@@ -148,10 +222,33 @@ export default function DataModal({
                         submitData.append(key, file);
                     }
                 });
+
+                if (projectImages.length > 0) {
+                    const imagesData = projectImages.map((img, index) => ({
+                        image_url: img.file ? null : img.image_url,
+                        image_order: index + 1,
+                        is_primary: img.is_primary || index === primaryImageIndex
+                    }));
+
+                    submitData.append('images_metadata', JSON.stringify(imagesData));
+
+                    projectImages.forEach((img, index) => {
+                        if (img.file) {
+                            submitData.append('images', img.file);
+                        }
+                    });
+                }
             } else {
+                const imagesData = projectImages.map((img, index) => ({
+                    image_url: img.image_url,
+                    image_order: index + 1,
+                    is_primary: img.is_primary || index === primaryImageIndex
+                }));
+
                 submitData = {
                     ...formData,
                     technology_ids: selectedTechnologies.map((tech) => tech.id),
+                    images: imagesData
                 };
             }
 
@@ -163,6 +260,8 @@ export default function DataModal({
             setFormData({});
             setFileData({});
             setFilePreviews({});
+            setProjectImages([]);
+            setPrimaryImageIndex(0);
         } catch (err) {
             Swal.fire("Error", err.response?.data?.error || err.message, "error");
         }
@@ -181,6 +280,138 @@ export default function DataModal({
     const renderField = (field) => {
         const fieldValue = formData[field.name] || "";
         const isFieldReadOnly = isReadOnly || field.readOnly;
+
+        if (field.type === "multiple_image_upload") {
+            return (
+                <div key={field.name} className="flex flex-col">
+                    <label className="text-sm mb-1 font-medium">{field.label}</label>
+
+                    {!isFieldReadOnly && (
+                        <div className="mb-4">
+                            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-gray-400 transition-colors">
+                                <input
+                                    type="file"
+                                    accept={field.accept || "image/*"}
+                                    multiple
+                                    onChange={(e) => handleMultipleImageUpload(e.target.files)}
+                                    className="hidden"
+                                    id="multiple-image-upload"
+                                />
+                                <label htmlFor="multiple-image-upload" className="flex flex-col items-center cursor-pointer">
+                                    <Upload className="w-8 h-8 text-gray-400 mb-2" />
+                                    <span className="text-sm text-gray-600">
+                                        Click to upload images (max {field.maxFiles || 5})
+                                    </span>
+                                    <span className="text-xs text-gray-400 mt-1">
+                                        PNG, JPG, JPEG up to 10MB each
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    )}
+
+                    {projectImages.length > 0 && (
+                        <div className="space-y-4">
+                            <h4 className="text-sm font-medium text-gray-700">
+                                Uploaded Images ({projectImages.length})
+                            </h4>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                {projectImages.map((img, index) => (
+                                    <div key={index} className="relative group">
+                                        <div className={`relative border-2 rounded-lg overflow-hidden ${img.is_primary || index === primaryImageIndex
+                                                ? 'border-blue-500'
+                                                : 'border-gray-200'
+                                            }`}>
+                                            <img
+                                                src={img.preview || img.image_url}
+                                                alt={`Image ${index + 1}`}
+                                                className="w-full h-32 object-cover"
+                                            />
+
+                                            {(img.is_primary || index === primaryImageIndex) && (
+                                                <div className="absolute top-2 left-2 bg-blue-500 text-white px-2 py-1 rounded text-xs flex items-center gap-1">
+                                                    <Star className="w-3 h-3 fill-current" />
+                                                    Primary
+                                                </div>
+                                            )}
+
+                                            {!isFieldReadOnly && (
+                                                <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center space-x-2">
+                                                    {!(img.is_primary || index === primaryImageIndex) && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleSetPrimaryImage(index)}
+                                                            className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors"
+                                                            title="Set as primary"
+                                                        >
+                                                            <Star className="w-4 h-4" />
+                                                        </button>
+                                                    )}
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleRemoveImage(index)}
+                                                        className="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors"
+                                                        title="Remove image"
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div className="mt-2 text-xs text-gray-500 text-center">
+                                            Image {index + 1}
+                                            {(img.is_primary || index === primaryImageIndex) && " (Primary)"}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {isFieldReadOnly && projectImages.length === 0 && (
+                        <div className="p-4 border border-gray-200 rounded-md bg-gray-50 text-gray-500 text-center">
+                            No images available
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        if (field.type === "multiple_image_display") {
+            return (
+                <div key={field.name} className="flex flex-col">
+                    <label className="text-sm mb-1 font-medium">{field.label}</label>
+                    {projectImages.length > 0 ? (
+                        <div className="space-y-4">
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                {projectImages.map((img, index) => (
+                                    <div key={index} className={`relative border-2 rounded-lg overflow-hidden ${img.is_primary ? 'border-blue-500' : 'border-gray-200'
+                                        }`}>
+                                        <img
+                                            src={img.image_url}
+                                            alt={`Image ${index + 1}`}
+                                            className="w-full h-32 object-cover"
+                                        />
+
+                                        {img.is_primary && (
+                                            <div className="absolute top-2 left-2 bg-blue-500 text-white px-2 py-1 rounded text-xs flex items-center gap-1">
+                                                <Star className="w-3 h-3 fill-current" />
+                                                Primary
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="p-4 border border-gray-200 rounded-md bg-gray-50 text-gray-500 text-center">
+                            No images available
+                        </div>
+                    )}
+                </div>
+            );
+        }
 
         if (field.type === "wysiwyg") {
             return (
@@ -481,9 +712,3 @@ export default function DataModal({
         </div>
     );
 }
-
-
-
-
-
-

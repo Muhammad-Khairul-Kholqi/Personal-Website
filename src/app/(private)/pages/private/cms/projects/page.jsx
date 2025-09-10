@@ -9,7 +9,7 @@ import { GetTechnologies } from "@/app/api/technologyApi";
 import Pagination from "@/app/components/molecules/pagination";
 import DataModal from "@/app/components/modals/dataModal"
 
-const PROJECT_STATUS = [    
+const PROJECT_STATUS = [
     { value: "processed", label: "Processed" },
     { value: "finished", label: "Finished" },
 ];
@@ -125,7 +125,7 @@ export default function ProjectPage() {
         if (confirm.isConfirmed) {
             await DeleteProject(project.id);
             setProjects((prev) => prev.filter((t) => t.id !== project.id));
-            Swal.fire("Deleted!", "Your education has been deleted.", "success");
+            Swal.fire("Deleted!", "Your project has been deleted.", "success");
         }
     };
 
@@ -176,10 +176,9 @@ export default function ProjectPage() {
                     readOnly: true
                 },
                 {
-                    name: "image",
-                    label: "Image",
-                    type: "file",
-                    accept: "image/*",
+                    name: "images",
+                    label: "Project Images",
+                    type: "multiple_image_display",
                     readOnly: true
                 }
             ];
@@ -235,10 +234,11 @@ export default function ProjectPage() {
                     required: false
                 },
                 {
-                    name: "image",
-                    label: "Project Image",
-                    type: "file",
+                    name: "images",
+                    label: "Project Images",
+                    type: "multiple_image_upload",
                     accept: "image/*",
+                    maxFiles: 5,
                     required: modalMode === "create"
                 }
             ];
@@ -291,7 +291,7 @@ export default function ProjectPage() {
                                     <th className="px-6 py-3">Title</th>
                                     <th className="px-6 py-3">URL Github</th>
                                     <th className="px-6 py-3">URL Demo</th>
-                                    <th className="px-6 py-3">Image</th>
+                                    <th className="px-6 py-3">Primary Image</th>
                                     <th className="px-6 py-3">Action</th>
                                 </tr>
                             </thead>
@@ -320,12 +320,19 @@ export default function ProjectPage() {
                                                 )}
                                             </td>
                                             <td className="px-6 py-4 align-top">
-                                                {project.image ? (
-                                                    <img
-                                                        src={project.image}
-                                                        alt={project.title}
-                                                        className="w-12 h-12 object-cover rounded-md"
-                                                    />
+                                                {project.primary_image ? (
+                                                    <div className="relative group">
+                                                        <img
+                                                            src={project.primary_image}
+                                                            alt={project.title}
+                                                            className="w-12 h-12 object-cover rounded-md"
+                                                        />
+                                                        {project.images && project.images.length > 1 && (
+                                                            <span className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                                                {project.images.length}
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                 ) : (
                                                     "No image"
                                                 )}
