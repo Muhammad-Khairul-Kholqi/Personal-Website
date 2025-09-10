@@ -24,7 +24,6 @@ export default function DetailProjectPage({ params }) {
                     setProject(null)
                 } else {
                     setProject(foundProject)
-                    // Set selected image index to primary image or first image
                     if (foundProject.images && foundProject.images.length > 0) {
                         const primaryIndex = foundProject.images.findIndex(img => img.is_primary)
                         setSelectedImageIndex(primaryIndex >= 0 ? primaryIndex : 0)
@@ -123,18 +122,15 @@ export default function DetailProjectPage({ params }) {
                 </div>
             )}
 
-            {/* Main Image */}
             <div className="mt-5">
                 {getMainImage() ? (
                     <div className="space-y-4">
-                        {/* Large Main Image */}
                         <div className="relative group">
                             <img
                                 src={getMainImage()}
                                 alt={project.title}
                                 className="w-full h-[400px] md:h-[500px] object-cover border border-gray-200 rounded-xl transition-all duration-300"
                             />
-                            {/* Image Counter */}
                             {project.images && project.images.length > 1 && (
                                 <div className="absolute top-4 right-4 bg-black/60 text-white px-3 py-1 rounded-full text-sm">
                                     {selectedImageIndex + 1} / {project.images.length}
@@ -142,7 +138,6 @@ export default function DetailProjectPage({ params }) {
                             )}
                         </div>
 
-                        {/* Thumbnail Images */}
                         {getThumbnailImages().length > 0 && (
                             <div className="space-y-3">
                                 <p className="text-sm font-medium text-gray-700">Other Images:</p>
@@ -157,15 +152,13 @@ export default function DetailProjectPage({ params }) {
                                                 <img
                                                     src={image.image_url}
                                                     alt={`${project.title} - Image ${index + 1}`}
-                                                    className="w-full h-24 sm:h-28 object-cover border border-gray-200 rounded-lg transition-all duration-300 group-hover:border-blue-400 group-hover:scale-105"
+                                                    className="w-full h-24 sm:h-28 object-cover border border-gray-200 rounded-lg transition-all duration-300"
                                                 />
-                                                {/* Primary Badge for Thumbnails */}
                                                 {image.is_primary && (
-                                                    <div className="absolute top-1 left-1 bg-blue-500 text-white px-1 py-0.5 rounded text-xs">
+                                                    <div className="absolute top-1 left-1 bg-black text-white px-1 py-0.5 rounded text-xs">
                                                         Primary
                                                     </div>
                                                 )}
-                                                {/* Hover Overlay */}
                                                 <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg flex items-center justify-center">
                                                     <p className="text-white text-xs font-medium">Click to view</p>
                                                 </div>
@@ -176,7 +169,6 @@ export default function DetailProjectPage({ params }) {
                             </div>
                         )}
 
-                        {/* Show All Images Button (if more than 4 images) */}
                         {project.images && project.images.length > 5 && (
                             <div className="text-center">
                                 <button className="text-blue-500 hover:text-blue-600 text-sm font-medium hover:underline">
@@ -192,7 +184,6 @@ export default function DetailProjectPage({ params }) {
                 )}
             </div>
 
-            {/* Image Navigation Dots (optional for better UX) */}
             {project.images && project.images.length > 1 && (
                 <div className="flex justify-center mt-4 space-x-2">
                     {project.images.map((_, index) => (
@@ -200,7 +191,7 @@ export default function DetailProjectPage({ params }) {
                             key={index}
                             onClick={() => handleImageClick(index)}
                             className={`w-2 h-2 rounded-full transition-all duration-300 ${index === selectedImageIndex
-                                    ? 'bg-blue-500 w-6'
+                                    ? 'bg-black w-6'
                                     : 'bg-gray-300 hover:bg-gray-400'
                                 }`}
                         />

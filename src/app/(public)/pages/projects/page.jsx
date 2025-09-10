@@ -155,7 +155,7 @@ export default function ProjectsPage() {
                             <div key={project.id} className="border border-gray-200 p-5 rounded-lg group">
                                 <div className="relative overflow-hidden rounded-lg">
                                     <img
-                                        src={project.image}
+                                        src={project.primary_image}
                                         alt={project.title}
                                         className="border w-full h-[200px] border-gray-200 rounded-lg object-cover group-hover:scale-110 duration-300"
                                     />
